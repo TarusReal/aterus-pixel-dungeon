@@ -531,7 +531,10 @@ public class ItemSpriteSheet {
 	public static final int SCROLL_BERKANAN = SCROLLS+9;
 	public static final int SCROLL_ODAL     = SCROLLS+10;
 	public static final int SCROLL_TIWAZ    = SCROLLS+11;
-
+	public static final int SCROLL_SANIN   = SCROLLS+12;
+	public static final int SCROLL_MURWAL    = SCROLLS+14;
+	public static final int SCROLL_VANTIBU   = SCROLLS+15;
+	//EHWAZ, ALGIZ, DAGAZ, WUNJO, HAGALL
 	public static final int ARCANE_RESIN    = SCROLLS+13;
 	static {
 		for (int i = SCROLLS; i < SCROLLS+16; i++)
@@ -552,6 +555,9 @@ public class ItemSpriteSheet {
 	public static final int EXOTIC_BERKANAN = EXOTIC_SCROLLS+9;
 	public static final int EXOTIC_ODAL     = EXOTIC_SCROLLS+10;
 	public static final int EXOTIC_TIWAZ    = EXOTIC_SCROLLS+11;
+	public static final int EXOTIC_SANIN   = EXOTIC_SCROLLS+12;
+	public static final int EXOTIC_MURWAL    = EXOTIC_SCROLLS+14;
+	public static final int EXOTIC_VANTIBU   = EXOTIC_SCROLLS+15;
 	static {
 		for (int i = EXOTIC_SCROLLS; i < EXOTIC_SCROLLS+16; i++)
 			assignItemRect(i, 15, 14);

@@ -71,6 +71,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.*;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Cudgel;
@@ -151,7 +152,9 @@ public enum HeroClass {
 			//new ScrollOfRevelation().collect();
 			new ScrollOfRemoveCurse().collect();
 			new ScrollOfUpgrade().collect();
+			new ScrollOfChallenge().collect();
 			new ScrollHolder().collect();
+			new ScrollOfChallenge().collect();
 			new PotionBandolier().collect();
 		}
 
