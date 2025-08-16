@@ -51,7 +51,7 @@ public class Barrier extends ShieldBuff {
 	@Override
 	public boolean act() {
 
-		partialLostShield += Math.min(1f, shielding()/20f) * HoldFast.buffDecayFactor(target);
+		partialLostShield += Math.min(1f, shielding()/20f);
 
 		if (partialLostShield >= 1f) {
 			absorbDamage(1);

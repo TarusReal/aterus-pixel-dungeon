@@ -168,7 +168,7 @@ public abstract class Recipe {
 	//*******
 
 	private static Recipe[] variableRecipes = new Recipe[]{
-			//none for now
+			new LiquidMetal.Recipe()
 	};
 	
 	private static Recipe[] oneIngredientRecipes = new Recipe[]{
@@ -176,7 +176,6 @@ public abstract class Recipe {
 		new ExoticPotion.PotionToExotic(),
 		new ExoticScroll.ScrollToExotic(),
 		new ArcaneResin.Recipe(),
-		new LiquidMetal.Recipe(),
 		new BlizzardBrew.Recipe(),
 		new InfernalBrew.Recipe(),
 		new AquaBrew.Recipe(),
@@ -255,12 +254,11 @@ public abstract class Recipe {
 	}
 	
 	public static boolean usableInRecipe(Item item){
-		//only upgradeable thrown weapons and wands allowed among equipment items
 		if (item instanceof EquipableItem){
-			return item.cursedKnown && !item.cursed &&
-					item instanceof MissileWeapon && item.isUpgradable();
+			//only thrown weapons and wands allowed among equipment items
+			return item.isIdentified() && !item.cursed && item instanceof MissileWeapon;
 		} else if (item instanceof Wand) {
-			return item.cursedKnown && !item.cursed;
+			return item.isIdentified() && !item.cursed;
 		} else {
 			//other items can be unidentified, but not cursed
 			return !item.cursed;

@@ -150,6 +150,18 @@ public class StartScene extends PixelScene {
 		}
 		if (games.size() >= 2) add(btnSort);
 
+		// Toggle-Button für 'Mit allen Tränken starten' im Hauptmenü
+        StyledButton potionsToggleButton = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "DevMode: " + (SPDSettings.startWithAllPotions() ? "AN" : "AUS"), 9) {
+            @Override
+            protected void onClick() {
+                super.onClick();
+                SPDSettings.startWithAllPotions(!SPDSettings.startWithAllPotions());
+                text("DevMode: " + (SPDSettings.startWithAllPotions() ? "AN" : "AUS"));
+            }
+        };
+        potionsToggleButton.setPos((w - SLOT_WIDTH) / 2f, yPos + 40); // Position unter den Spiel-Slots
+        add(potionsToggleButton);
+
 		fadeIn();
 		
 	}

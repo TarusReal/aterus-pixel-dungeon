@@ -53,7 +53,7 @@ public class GnollTrickster extends Gnoll {
 		WANDERING = new Wandering();
 		state = WANDERING;
 
-		//at quantity of 1 and no upgrades
+		//at half quantity, see createLoot()
 		loot = Generator.Category.MISSILE;
 		lootChance = 1f;
 
@@ -126,12 +126,6 @@ public class GnollTrickster extends Gnoll {
 	@Override
 	public Item createLoot() {
 		MissileWeapon drop = (MissileWeapon)super.createLoot();
-		drop.level(0);
-		if (drop.hasCurseEnchant()){
-			drop.enchant(null);
-		}
-		drop.cursed = false;
-		drop.identify(false);
 		//half quantity, rounded up
 		drop.quantity((drop.quantity()+1)/2);
 		return drop;

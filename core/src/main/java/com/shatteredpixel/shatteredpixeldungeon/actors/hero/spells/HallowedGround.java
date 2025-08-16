@@ -153,7 +153,6 @@ public class HallowedGround extends TargetedClericSpell {
 				}
 			}
 		} else if (!ch.flying) {
-			Buff.affect(ch, GuidingLight.Illuminated.class);
 			Buff.affect(ch, Roots.class, 2f);
 		}
 	}

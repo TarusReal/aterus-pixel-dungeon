@@ -588,16 +588,6 @@ public class DriedRose extends Artifact {
 			HT = 20 + 8*rose.level();
 		}
 
-		public Weapon weapon(){
-			if (rose != null)   return rose.weapon;
-			else                return null;
-		}
-
-		public Armor armor(){
-			if (rose != null)   return rose.armor;
-			else                return null;
-		}
-
 		@Override
 		protected boolean act() {
 			updateRose();
@@ -621,8 +611,8 @@ public class DriedRose extends Artifact {
 			//same accuracy as the hero.
 			int acc = Dungeon.hero.lvl + 9;
 			
-			if (weapon() != null){
-				acc *= weapon().accuracyFactor( this, target );
+			if (rose != null && rose.weapon != null){
+				acc *= rose.weapon.accuracyFactor( this, target );
 			}
 			
 			return acc;
@@ -631,22 +621,22 @@ public class DriedRose extends Artifact {
 		@Override
 		public float attackDelay() {
 			float delay = super.attackDelay();
-			if (weapon() != null){
-				delay *= weapon().delayFactor(this);
+			if (rose != null && rose.weapon != null){
+				delay *= rose.weapon.delayFactor(this);
 			}
 			return delay;
 		}
 		
 		@Override
 		protected boolean canAttack(Char enemy) {
-			return super.canAttack(enemy) || (weapon() != null && weapon().canReach(this, enemy.pos));
+			return super.canAttack(enemy) || (rose != null && rose.weapon != null && rose.weapon.canReach(this, enemy.pos));
 		}
 		
 		@Override
 		public int damageRoll() {
 			int dmg = 0;
-			if (weapon() != null){
-				dmg += weapon().damageRoll(this);
+			if (rose != null && rose.weapon != null){
+				dmg += rose.weapon.damageRoll(this);
 			} else {
 				dmg += Random.NormalIntRange(0, 5);
 			}
@@ -657,12 +647,13 @@ public class DriedRose extends Artifact {
 		@Override
 		public int attackProc(Char enemy, int damage) {
 			damage = super.attackProc(enemy, damage);
-
-			if (weapon() != null) {
-				damage = weapon().proc(this, enemy, damage);
-				if (!enemy.isAlive() && enemy == Dungeon.hero) {
-					Dungeon.fail(this);
-					GLog.n(Messages.capitalize(Messages.get(Char.class, "kill", name())));
+			if (rose != null) {
+				if (rose.weapon != null) {
+					damage = rose.weapon.proc(this, enemy, damage);
+					if (!enemy.isAlive() && enemy == Dungeon.hero) {
+						Dungeon.fail(this);
+						GLog.n(Messages.capitalize(Messages.get(Char.class, "kill", name())));
+					}
 				}
 			}
 
@@ -671,8 +662,8 @@ public class DriedRose extends Artifact {
 		
 		@Override
 		public int defenseProc(Char enemy, int damage) {
-			if (armor() != null) {
-				damage = armor().proc( enemy, this, damage );
+			if (rose != null && rose.armor != null) {
+				damage = rose.armor.proc( enemy, this, damage );
 			}
 			return super.defenseProc(enemy, damage);
 		}
@@ -703,8 +694,8 @@ public class DriedRose extends Artifact {
 		public int defenseSkill(Char enemy) {
 			int defense = super.defenseSkill(enemy);
 
-			if (defense != 0 && armor() != null ){
-				defense = Math.round(armor().evasionFactor( this, defense ));
+			if (defense != 0 && rose != null && rose.armor != null ){
+				defense = Math.round(rose.armor.evasionFactor( this, defense ));
 			}
 			
 			return defense;
@@ -713,19 +704,19 @@ public class DriedRose extends Artifact {
 		@Override
 		public int drRoll() {
 			int dr = super.drRoll();
-			if (armor() != null){
-				dr += Random.NormalIntRange( armor().DRMin(), armor().DRMax());
+			if (rose != null && rose.armor != null){
+				dr += Random.NormalIntRange( rose.armor.DRMin(), rose.armor.DRMax());
 			}
-			if (weapon() != null){
-				dr += Random.NormalIntRange( 0, weapon().defenseFactor( this ));
+			if (rose != null && rose.weapon != null){
+				dr += Random.NormalIntRange( 0, rose.weapon.defenseFactor( this ));
 			}
 			return dr;
 		}
 
 		@Override
 		public int glyphLevel(Class<? extends Armor.Glyph> cls) {
-			if (armor() != null && armor().hasGlyph(cls, this)){
-				return Math.max(super.glyphLevel(cls), armor().buffedLvl());
+			if (rose != null && rose.armor != null && rose.armor.hasGlyph(cls, this)){
+				return Math.max(super.glyphLevel(cls), rose.armor.buffedLvl());
 			} else {
 				return super.glyphLevel(cls);
 			}

@@ -111,16 +111,26 @@ public class DesktopLauncher {
 				System.exit(1);
 			}
 		});
-		
+
 		Game.version = DesktopLauncher.class.getPackage().getSpecificationVersion();
 		if (Game.version == null) {
 			Game.version = System.getProperty("Specification-Version");
 		}
-		
+		if (Game.version == null) {
+			Game.version = "dev"; // Standardwert für Entwicklung
+		}
+
+		String versionCodeStr = DesktopLauncher.class.getPackage().getImplementationVersion();
+		if (versionCodeStr == null) {
+			versionCodeStr = System.getProperty("Implementation-Version");
+		}
+		if (versionCodeStr == null) {
+			versionCodeStr = "0"; // Standardwert
+		}
 		try {
-			Game.versionCode = Integer.parseInt(DesktopLauncher.class.getPackage().getImplementationVersion());
+			Game.versionCode = Integer.parseInt(versionCodeStr);
 		} catch (NumberFormatException e) {
-			Game.versionCode = Integer.parseInt(System.getProperty("Implementation-Version"));
+			Game.versionCode = 0;
 		}
 
 		if (UpdateImpl.supportsUpdates()){
@@ -137,11 +147,20 @@ public class DesktopLauncher {
 		//if I were implementing this from scratch I would use the full implementation title for saves
 		// (e.g. /.shatteredpixel/shatteredpixeldungeon), but we have too much existing save
 		// date to worry about transferring at this point.
+		// ...
 		String vendor = DesktopLauncher.class.getPackage().getImplementationTitle();
 		if (vendor == null) {
 			vendor = System.getProperty("Implementation-Title");
 		}
-		vendor = vendor.split("\\.")[1];
+		if (vendor == null) {
+			vendor = "shatteredpixel"; // Standardwert
+		}
+		String[] vendorParts = vendor.split("\\.");
+		if (vendorParts.length > 1) {
+			vendor = vendorParts[1];
+		} else {
+			vendor = vendorParts[0]; // Fallback: erstes Element verwenden
+		}
 
 		String basePath = "";
 		Files.FileType baseFileType = null;

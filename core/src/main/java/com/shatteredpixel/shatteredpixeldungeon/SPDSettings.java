@@ -482,4 +482,14 @@ public class SPDSettings extends GameSettings {
 	public static int fulLScreenMonitor(){
 		return getInt( KEY_FULLSCREEN_MONITOR, 0 );
 	}
+
+	public static final String KEY_START_WITH_ALL_POTIONS = "start_with_all_potions";
+
+	public static void startWithAllPotions(boolean value) {
+		put(KEY_START_WITH_ALL_POTIONS, value);
+	}
+
+	public static boolean startWithAllPotions() {
+		return getBoolean(KEY_START_WITH_ALL_POTIONS, false);
+	}
 }

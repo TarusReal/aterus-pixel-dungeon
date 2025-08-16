@@ -42,7 +42,6 @@ import com.watabou.noosa.Visual;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.GameMath;
-import com.watabou.utils.Random;
 
 public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 
@@ -103,12 +102,9 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 		if (state == State.BERSERK){
 			if (target.shielding() > 0) {
 				//lose 2.5% of shielding per turn, but no less than 1
-				float dmg = (float)Math.ceil(target.shielding() * 0.025f) * HoldFast.buffDecayFactor(target);
-				if (Random.Float() < dmg % 1){
-					dmg++;
-				}
+				int dmg = (int)Math.ceil(target.shielding() * 0.025f);
 
-				ShieldBuff.processDamage(target, (int)dmg, this);
+				dmg = ShieldBuff.processDamage(target, dmg, this);
 
 				if (target.shielding() <= 0){
 					state = State.RECOVERING;
@@ -133,7 +129,7 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 			if (powerLossBuffer > 0){
 				powerLossBuffer--;
 			} else {
-				power -= GameMath.gate(0.1f, power, 1f) * 0.05f * Math.pow((target.HP / (float) target.HT), 2);
+				power -= GameMath.gate(0.1f, power, 1f) * 0.067f * Math.pow((target.HP / (float) target.HT), 2);
 
 				if (power < 1f){
 					ActionIndicator.clearAction(this);
@@ -214,7 +210,7 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 			turnRecovery *= 2f - power;
 		}
 
-		int baseShield = 8;
+		int baseShield = 10;
 		if (target instanceof Hero && ((Hero) target).belongings.armor() != null){
 			baseShield += 2*((Hero) target).belongings.armor().buffedLvl();
 		}
@@ -223,7 +219,7 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 
 	//not accounting for talents
 	public int maxShieldBoost(){
-		int baseShield = 8;
+		int baseShield = 10;
 		if (target instanceof Hero && ((Hero) target).belongings.armor() != null){
 			baseShield += 2*((Hero) target).belongings.armor().buffedLvl();
 		}
@@ -233,7 +229,7 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 	public void damage(int damage){
 		if (state != State.NORMAL) return;
 		float maxPower = 1f + 0.1667f*((Hero)target).pointsInTalent(Talent.ENDLESS_RAGE);
-		power = Math.min(maxPower, power + (damage/(float)target.HT)/4f );
+		power = Math.min(maxPower, power + (damage/(float)target.HT)/3f );
 		BuffIndicator.refreshHero(); //show new power immediately
 		powerLossBuffer = 3; //2 turns until rage starts dropping
 		if (power >= 1f){

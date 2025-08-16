@@ -933,12 +933,12 @@ public class WndSettings extends WndTabbed {
 		ColorBlock sep1;
 		OptionSlider optMusic;
 		CheckBox chkMusicMute;
+		CheckBox chkAllPotions;
 		ColorBlock sep2;
 		OptionSlider optSFX;
-		CheckBox chkMuteSFX;
-		ColorBlock sep3;
 		CheckBox chkIgnoreSilent;
 		CheckBox chkMusicBG;
+		ColorBlock sep3;
 
 		@Override
 		protected void createChildren() {
@@ -990,16 +990,17 @@ public class WndSettings extends WndTabbed {
 			optSFX.setSelectedValue(SPDSettings.SFXVol());
 			add(optSFX);
 
-			chkMuteSFX = new CheckBox( Messages.get(this, "sfx_mute") ) {
+			// Ersetze SFX-Stummschalten durch 'DevMode'
+			chkAllPotions = new CheckBox("DevMode") {
 				@Override
 				protected void onClick() {
 					super.onClick();
-					SPDSettings.soundFx(!checked());
-					Sample.INSTANCE.play( Assets.Sounds.CLICK );
+					SPDSettings.startWithAllPotions(checked());
 				}
 			};
-			chkMuteSFX.checked(!SPDSettings.soundFx());
-			add( chkMuteSFX );
+			chkAllPotions.checked(SPDSettings.startWithAllPotions());
+			add(chkAllPotions);
+			// Entferne SFX-Mute-Checkbox
 
 			if (DeviceCompat.isiOS()){
 
@@ -1047,7 +1048,7 @@ public class WndSettings extends WndTabbed {
 				sep2.y = sep1.y; //just have them overlap
 
 				optSFX.setRect(optMusic.right()+2, sep2.y + 1 + GAP, width/2-1, SLIDER_HEIGHT);
-				chkMuteSFX.setRect(chkMusicMute.right()+2, optSFX.bottom() + GAP, width/2-1, BTN_HEIGHT);
+				chkAllPotions.setRect(chkMusicMute.right()+2, optSFX.bottom() + GAP, width/2-1, BTN_HEIGHT);
 
 			} else {
 				optMusic.setRect(0, sep1.y + 1 + GAP, width, SLIDER_HEIGHT);
@@ -1057,20 +1058,20 @@ public class WndSettings extends WndTabbed {
 				sep2.y = chkMusicMute.bottom() + GAP;
 
 				optSFX.setRect(0, sep2.y + 1 + GAP, width, SLIDER_HEIGHT);
-				chkMuteSFX.setRect(0, optSFX.bottom() + GAP, width, BTN_HEIGHT);
+				chkAllPotions.setRect(0, optSFX.bottom() + GAP, width, BTN_HEIGHT);
 			}
 
-			height = chkMuteSFX.bottom();
+			height = chkAllPotions.bottom();
 
 			if (chkIgnoreSilent != null){
 				sep3.size(width, 1);
-				sep3.y = chkMuteSFX.bottom() + GAP;
+				sep3.y = chkAllPotions.bottom() + GAP;
 
 				chkIgnoreSilent.setRect(0, sep3.y + 1 + GAP, width, BTN_HEIGHT);
 				height = chkIgnoreSilent.bottom();
 			} else if (chkMusicBG != null){
 				sep3.size(width, 1);
-				sep3.y = chkMuteSFX.bottom() + GAP;
+				sep3.y = chkAllPotions.bottom() + GAP;
 
 				chkMusicBG.setRect(0, sep3.y + 1 + GAP, width, BTN_HEIGHT);
 				height = chkMusicBG.bottom();

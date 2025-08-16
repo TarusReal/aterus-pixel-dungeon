@@ -99,14 +99,14 @@ public class StoneOfIntuition extends InventoryStone {
 		public WndGuess(final Item item){
 			
 			IconTitle titlebar = new IconTitle();
-			titlebar.icon( new ItemSprite(item) );
-			titlebar.label( Messages.titleCase(item.name()) );
+			titlebar.icon( new ItemSprite(ItemSpriteSheet.STONE_INTUITION, null) );
+			titlebar.label( Messages.titleCase(Messages.get(StoneOfIntuition.class, "name")) );
 			titlebar.setRect( 0, 0, WIDTH, 0 );
 			add( titlebar );
 			
 			RenderedTextBlock text = PixelScene.renderTextBlock(6);
 			text.text( Messages.get(this, "text") );
-			text.setPos(0, titlebar.bottom()+2);
+			text.setPos(0, titlebar.bottom());
 			text.maxWidth( WIDTH );
 			add(text);
 			
@@ -118,7 +118,6 @@ public class StoneOfIntuition extends InventoryStone {
 					if (item.getClass() == curGuess){
 						if (item instanceof Ring){
 							((Ring) item).setKnown();
-							Item.updateQuickslot();
 						} else {
 							item.identify();
 						}
@@ -127,7 +126,7 @@ public class StoneOfIntuition extends InventoryStone {
 					} else {
 						GLog.w( Messages.get(WndGuess.class, "incorrect") );
 					}
-					if (!anonymous) {
+					if (false) {
 						Catalog.countUse(StoneOfIntuition.class);
 						if (curUser.buff(IntuitionUseTracker.class) == null) {
 							Buff.affect(curUser, IntuitionUseTracker.class);

@@ -41,10 +41,8 @@ public class Rat extends Mob {
 
 	@Override
 	protected boolean act() {
-		if (alignment == Alignment.ENEMY
-				&& Dungeon.level.heroFOV[pos]
-				&& Dungeon.hero.armorAbility instanceof Ratmogrify){
-			alignment = Alignment.NEUTRAL;
+		if (Dungeon.level.heroFOV[pos] && Dungeon.hero.armorAbility instanceof Ratmogrify){
+			alignment = Alignment.ALLY;
 			if (state == SLEEPING) state = WANDERING;
 		}
 		return super.act();

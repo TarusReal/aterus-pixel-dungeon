@@ -593,6 +593,8 @@ public class DM300 extends Mob {
 		}
 
 		yell( Messages.get(this, "defeated") );
+        // Cape of Thorns als Boss-Item droppen (analog zu Tengu)
+        Dungeon.level.drop(new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns(), pos).sprite.drop(pos);
 	}
 
 	@Override

@@ -646,7 +646,7 @@ public class Item implements Bundlable {
 		Char enemy = Actor.findChar( cell );
 		QuickSlotButton.target(enemy);
 		
-		final float delay = castDelay(user, cell);
+		final float delay = castDelay(user, dst);
 
 		if (enemy != null) {
 			((MissileSprite) user.sprite.parent.recycle(MissileSprite.class)).
@@ -694,7 +694,7 @@ public class Item implements Bundlable {
 		}
 	}
 	
-	public float castDelay( Char user, int cell ){
+	public float castDelay( Char user, int dst ){
 		return TIME_TO_THROW;
 	}
 	

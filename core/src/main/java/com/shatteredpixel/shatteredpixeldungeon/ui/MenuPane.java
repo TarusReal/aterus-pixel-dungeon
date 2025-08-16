@@ -145,6 +145,37 @@ public class MenuPane extends Component {
 		add( danger );
 
 		add( pickedUp = new Toolbar.PickedUpItem());
+
+        // Toggle-Button für 'DevMode'
+        Button potionsToggleButton = new Button() {
+            @Override
+            protected String hoverText() {
+                return "DevMode";
+            }
+            @Override
+            protected void onClick() {
+                super.onClick();
+                SPDSettings.startWithAllPotions(!SPDSettings.startWithAllPotions());
+                //updatePotionsToggleText();
+            }
+        };
+        add(potionsToggleButton);
+
+        BitmapText potionsToggleText = new BitmapText("", PixelScene.pixelFont);
+        potionsToggleText.hardlight(0xCACFC2);
+        add(potionsToggleText);
+
+        Runnable updatePotionsToggleText = () -> {
+            if (SPDSettings.startWithAllPotions()) {
+                potionsToggleText.text("DevMode: AN");
+            } else {
+                potionsToggleText.text("DevMode: AUS");
+            }
+            potionsToggleText.measure();
+        };
+        updatePotionsToggleText.run();
+        potionsToggleButton.setPos(10, 100); // Position anpassen
+        //potionsToggleText.setPos(50, 100); // Position anpassen
 	}
 
 	@Override

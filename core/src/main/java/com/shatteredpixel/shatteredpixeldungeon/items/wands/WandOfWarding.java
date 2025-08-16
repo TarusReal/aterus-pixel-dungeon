@@ -307,28 +307,18 @@ public class WandOfWarding extends Wand {
 			switch(tier){
 				default:
 					return;
-				case 2:
-					heal = Math.round(1 * healFactor);
-					break;
-				case 3:
-					heal = Math.round(Random.IntRange(1, 2) * healFactor);
-					break;
 				case 4:
-					heal = Math.round(9 * healFactor); //9/5 1.8
+					heal = Math.round(9 * healFactor);
 					break;
 				case 5:
-					heal = Math.round(12 * healFactor); //12/6, 2
+					heal = Math.round(12 * healFactor);
 					break;
 				case 6:
-					heal = Math.round(16 * healFactor); //16/7, 2.28
+					heal = Math.round(16 * healFactor);
 					break;
 			}
 
-			if (tier <= 3){
-				totalZaps = (Math.max(0, totalZaps-heal));
-			} else {
-				HP = Math.min(HT, HP + heal);
-			}
+			HP = Math.min(HT, HP+heal);
 			if (sprite != null) sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(heal), FloatingText.HEALING);
 
 		}

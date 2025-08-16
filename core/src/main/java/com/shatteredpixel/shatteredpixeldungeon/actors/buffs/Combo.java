@@ -93,7 +93,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 		comboTime = 5f;
 
 		if (!enemy.isAlive() || (enemy.buff(Corruption.class) != null && enemy.HP == enemy.HT)){
-			comboTime = 15f + 15f*((Hero)target).pointsInTalent(Talent.CLEAVE);
+			comboTime = Math.max(comboTime, 15*((Hero)target).pointsInTalent(Talent.CLEAVE));
 		}
 
 		initialComboTime = comboTime;
@@ -123,7 +123,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 
 	@Override
 	public boolean act() {
-		comboTime -= TICK * HoldFast.buffDecayFactor(target);
+		comboTime-=TICK;
 		spend(TICK);
 		if (comboTime <= 0) {
 			detach();
