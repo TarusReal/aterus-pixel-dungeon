@@ -21,10 +21,8 @@ public class Sponge extends Artifact {
         super();
         image = ItemSpriteSheet.SPONGE1;
         // Beschreibung und weitere Initialisierung folgt
-        defaultAction = AC_WRING;
+        defaultAction = "WRING_OUT";
     }
-
-    public static final String AC_WRING = "WRING";
 
     @Override
     public String name() {
@@ -68,7 +66,7 @@ public class Sponge extends Artifact {
             waterDrops -= canTransfer;
             updateSprite();
             hero.spendAndNext(1f);
-            GLog.i(Messages.get(this, "wring", canTransfer));
+            GLog.i(Messages.get(this, "WRING_OUT", canTransfer));
         } else {
             GLog.i(Messages.get(this, "nowater"));
         }
