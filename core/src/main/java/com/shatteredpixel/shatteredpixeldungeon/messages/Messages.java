@@ -75,6 +75,8 @@ public class Messages {
 			Assets.Messages.WINDOWS
 	};
 
+
+
 	static{
 		formatters = new HashMap<>();
 		setup(SPDSettings.language());

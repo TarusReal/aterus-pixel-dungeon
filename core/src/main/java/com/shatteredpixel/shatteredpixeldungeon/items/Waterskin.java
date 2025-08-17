@@ -38,7 +38,7 @@ import java.util.ArrayList;
 
 public class Waterskin extends Item {
 
-	private static final int MAX_VOLUME	= 20;
+	public static final int MAX_VOLUME	= 20;
 
 	private static final String AC_DRINK	= "DRINK";
 
@@ -54,7 +54,7 @@ public class Waterskin extends Item {
 		unique = true;
 	}
 
-	private int volume = 0;
+	public int volume = 0;
 
 	private static final String VOLUME	= "volume";
 

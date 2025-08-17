@@ -153,6 +153,9 @@ public class ItemSpriteSheet {
 	public static final int BROKEN_HILT     = MISC_CONSUMABLE +20;
 	public static final int TORN_PAGE       = MISC_CONSUMABLE +21;
 	public static final int TRINKET_CATA    = MISC_CONSUMABLE +22;
+	public static final int SPONGE1			= MISC_CONSUMABLE +26;
+	public static final int SPONGE2			= MISC_CONSUMABLE +27;
+	public static final int SPONGE3			= MISC_CONSUMABLE +28;
 
 	static{
 		assignItemRect(ANKH,            10, 16);
