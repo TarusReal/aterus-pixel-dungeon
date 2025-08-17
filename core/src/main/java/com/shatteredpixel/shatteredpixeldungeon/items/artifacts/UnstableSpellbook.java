@@ -36,14 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTerror;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.*;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfIntuition;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
@@ -77,7 +70,7 @@ public class UnstableSpellbook extends Artifact {
 
 		defaultAction = AC_READ;
 	}
-
+	private Scroll lastReadScroll = null;
 	public static final String AC_READ = "READ";
 	public static final String AC_ADD = "ADD";
 
@@ -95,7 +88,7 @@ public class UnstableSpellbook extends Artifact {
 		Class<?> chosen = null;
 		while (chosen == null) {
 			Class<?> candidate = scrollClasses[Random.Int(scrollClasses.length)];
-			if (candidate != ScrollOfTransmutation.class && candidate != ScrollOfRemoveCurse.class) {
+			if (candidate != ScrollOfTransmutation.class && candidate != ScrollOfRemoveCurse.class && candidate != ScrollOfUpgrade.class) {
 				chosen = candidate;
 			}
 		}
@@ -176,12 +169,27 @@ public class UnstableSpellbook extends Artifact {
 						@Override
 						protected void onClick() {
 							hide();
+							if(scroll instanceof ScrollOfUpgrade)
+							{
+								if(charge<2)
+								{
+									GLog.w(Messages.get(this, "less_charge"));
+									return;
+								}
+								else{charge--;}
+							}
 							if (charge > 0) {
 								charge--;
 								curItem = scroll;
 								curUser = hero;
 								checkForArtifactProc(curUser, scroll);
 								scroll.setKnown();
+								lastReadScroll=null;
+								if(!(scroll instanceof ScrollOfUpgrade))
+								{
+									lastReadScroll=scroll;
+								}
+
 								scroll.doRead();
 								Talent.onArtifactUsed(hero);
 								updateQuickslot();
@@ -212,8 +220,14 @@ public class UnstableSpellbook extends Artifact {
 
 	public void doReadEffect(Hero hero){
 		charge--;
-
-		Scroll scroll;
+		if(lastReadScroll != null) {
+			checkForArtifactProc(hero, lastReadScroll);
+			lastReadScroll.doRead();
+			Talent.onArtifactUsed(hero);
+		} else {
+			GLog.w(Messages.get(this, "no_scroll"));
+		}
+		/*Scroll scroll;
 		do {
 			scroll = (Scroll) Generator.randomUsingDefaults(Generator.Category.SCROLL);
 		} while (scroll == null
@@ -270,7 +284,7 @@ public class UnstableSpellbook extends Artifact {
 			Talent.onArtifactUsed(Dungeon.hero);
 		}
 
-		updateQuickslot();
+		updateQuickslot();*/
 	}
 
 	private void checkForArtifactProc(Hero user, Scroll scroll){
@@ -377,9 +391,22 @@ public class UnstableSpellbook extends Artifact {
 			
 			if (level() < levelCap && scrolls.size() > 0) {
 				desc += "\n\n" + Messages.get(this, "desc_index");
-				desc += "\n" + "_" + Messages.get(scrolls.get(0), "name") + "_";
-				if (scrolls.size() > 1)
-					desc += "\n" + "_" + Messages.get(scrolls.get(1), "name") + "_";
+				for(int n=0; n<scrolls.size(); n++) {
+
+                    Scroll scroll = null;
+                    try {
+                        scroll = (Scroll)scrolls.get(n).newInstance();
+                    } catch (InstantiationException e) {
+                        throw new RuntimeException(e);
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                    desc += "\n"+ "_" + scroll.name()+ "_";
+
+				}
+				//desc += "\n" + "_" + Messages.get(scrolls.get(0), "name") + "_";
+				//if (scrolls.size() > 1)
+				//	desc += "\n" + "_" + Messages.get(scrolls.get(1), "name") + "_";
 			}
 		}
 		
@@ -451,18 +478,18 @@ public class UnstableSpellbook extends Artifact {
 		}
 		@Override
 		public boolean itemSelectable(Item item) {
-			return item instanceof Scroll && !scrolls.contains(item.getClass());
+			return item instanceof Scroll && !scrolls.contains(item.getClass())&&!(item instanceof ExoticScroll);
 		}
 		@Override
 		public void onSelect(Item item) {
-			if (item != null && item instanceof Scroll) {
+			if (item != null && item instanceof Scroll&&!(item instanceof ExoticScroll)) {
 				Hero hero = Dungeon.hero;
 				scrolls.add(item.getClass());
 				item.detach(hero.belongings.backpack);
 				GLog.i(Messages.get(UnstableSpellbook.class, "infuse_scroll"));
 				updateQuickslot();
 			} else {
-				GLog.w(Messages.get(UnstableSpellbook.class, "unable_scroll"));
+				//GLog.w(Messages.get(UnstableSpellbook.class, "unable_scroll"));
 			}
 		}
 	};
