@@ -21,13 +21,14 @@ public class Sponge extends Artifact {
         super();
         image = ItemSpriteSheet.SPONGE1;
         // Beschreibung und weitere Initialisierung folgt
-        defaultAction = "WRING_OUT";
+        defaultAction = AC_WRING_OUT;
     }
 
     @Override
     public String name() {
         return Messages.get(this, "name");
     }
+    public static final String AC_WRING_OUT = "WRING_OUT";
 
     public void update() {
         if (isEquipped(Dungeon.hero) && waterDrops < MAX_DROPS) {
@@ -93,13 +94,13 @@ public class Sponge extends Artifact {
     @Override
     public java.util.ArrayList<String> actions(Hero hero) {
         java.util.ArrayList<String> actions = super.actions(hero);
-        actions.add("WRING_OUT");
+        actions.add(AC_WRING_OUT);
         return actions;
     }
 
     @Override
     public void execute(Hero hero, String action) {
-        if ("WRING_OUT".equals(action)) {
+        if (AC_WRING_OUT.equals(action)) {
             wringOut(hero);
         } else {
             super.execute(hero, action);
