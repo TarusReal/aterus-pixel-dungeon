@@ -173,7 +173,7 @@ public class UnstableSpellbook extends Artifact {
 							{
 								if(charge<2)
 								{
-									GLog.w(Messages.get(this, "less_charge"));
+									GLog.w(Messages.get(UnstableSpellbook.this, "less_charge"));
 									return;
 								}
 								else{charge--;}

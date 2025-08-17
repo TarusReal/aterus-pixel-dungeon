@@ -145,7 +145,8 @@ public class SewerLevel extends RegularLevel {
 	@Override
 	public boolean activateTransition(Hero hero, LevelTransition transition) {
 		if (transition.type == LevelTransition.Type.SURFACE){
-			if (hero.belongings.getItem( Amulet.class ) == null) {
+			//todo ATREBAS reset
+			if (false/*hero.belongings.getItem( Amulet.class ) == null*/) {
 				Game.runOnRenderThread(new Callback() {
 					@Override
 					public void call() {

@@ -13,7 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 public class Sponge extends Artifact {
 
     private static final int MAX_DROPS = 30;
-    private static final int TRANSFER_LIMIT = 10;
+    private static final int TRANSFER_LIMIT = 20;
     private int waterDrops = 0;
     private int tickCounter = 0;
 
@@ -22,11 +22,6 @@ public class Sponge extends Artifact {
         image = ItemSpriteSheet.SPONGE1;
         // Beschreibung und weitere Initialisierung folgt
         defaultAction = "WRING_OUT";
-    }
-
-    @Override
-    public String name() {
-        return Messages.get(this, "name");
     }
 
     public void update() {
