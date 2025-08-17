@@ -96,13 +96,12 @@ public class Sponge extends Artifact {
     public java.util.ArrayList<String> actions(Hero hero) {
         java.util.ArrayList<String> actions = super.actions(hero);
 
-        if (isEquipped( hero ) && charge > 0 && !cursed && hero.buff(MagicImmune.class) == null) {
+        if (isEquipped( hero ) && charge > 0 && !cursed && hero.buff(Burning.class) == null) {
             actions.add(AC_WRING);
         }
-        if (isEquipped( hero ) && level() < levelCap && !cursed && hero.buff(MagicImmune.class) == null) {
+        if (isEquipped( hero ) && charge > 0 && !cursed && hero.buff(Burning.class) == null) {
             actions.add(AC_WRING_OUT);
         }
-        actions.add("WRING_OUT");
         return actions;
 
 
@@ -128,8 +127,8 @@ public class Sponge extends Artifact {
                     && !cursed
                     && target.buff(Burning.class) == null
                     ) {
-                //30 turns to charge at full
-                float chargeGain = chargeCap / 30f;
+                //200 turns to charge at full
+                float chargeGain = chargeCap / 500f;
                // chargeGain *= RingOfEnergy.artifactChargeMultiplier(target);
                 /// ^Might want to readd this later, but for now it is too strong
                 partialCharge += chargeGain;
