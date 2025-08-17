@@ -88,6 +88,8 @@ public class PhantomPiranha extends Piranha {
 	public void dieOnLand() {
 		if (!teleportAway()){
 			super.dieOnLand();
+		}else{
+			//todo flash of light
 		}
 	}
 

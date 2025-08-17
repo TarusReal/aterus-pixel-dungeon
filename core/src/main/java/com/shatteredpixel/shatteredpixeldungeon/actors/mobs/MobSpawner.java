@@ -241,7 +241,8 @@ public class MobSpawner extends Actor {
 
 	//switches out regular mobs for their alt versions when appropriate
 	private static void swapMobAlts(ArrayList<Class<?extends Mob>> rotation) {
-		float altChance = 1 / 50f * RatSkull.exoticChanceMultiplier();
+		//float altChance = 1 / 50f * RatSkull.exoticChanceMultiplier();
+		float altChance = 1 / 2f * RatSkull.exoticChanceMultiplier();
 		for (int i = 0; i < rotation.size(); i++) {
 			if (Random.Float() < altChance) {
 				Class<? extends Mob> cl = rotation.get(i);
@@ -249,7 +250,7 @@ public class MobSpawner extends Actor {
 				else if (cl == Gnoll.class)         cl = GnollExile.class;
 				else if (cl == Crab.class)          cl = HermitCrab.class;
 				else if (cl == Slime.class)         cl = CausticSlime.class;
-
+				else if(cl== Snake.class)           cl= MudSnake.class;
 				else if (cl == Thief.class)         cl = Bandit.class;
 				else if (cl == Necromancer.class)   cl = SpectralNecromancer.class;
 

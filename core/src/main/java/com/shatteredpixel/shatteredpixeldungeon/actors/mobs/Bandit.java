@@ -34,7 +34,6 @@ import com.watabou.utils.Random;
 public class Bandit extends Thief {
 	
 	public Item item;
-	
 	{
 		spriteClass = BanditSprite.class;
 
