@@ -57,11 +57,19 @@ public class Sponge extends Artifact {
         }
         if (skin != null && waterDrops > 0) {
             int canTransfer = Math.min(waterDrops, Waterskin.MAX_VOLUME - skin.volume);
-            skin.volume += canTransfer;
-            waterDrops -= canTransfer;
-            updateSprite();
-            hero.spendAndNext(1f);
-            GLog.i(Messages.get(this, "WRING_OUT", canTransfer));
+            if (canTransfer > 0) {
+                skin.volume += canTransfer;
+                waterDrops -= canTransfer;
+                updateSprite();
+                hero.spendAndNext(1f);
+                if (canTransfer < waterDrops + canTransfer) {
+                    GLog.i(Messages.get(this, "partialtransfer", canTransfer));
+                } else {
+                    GLog.i(Messages.get(this, "WRING_OUT", canTransfer));
+                }
+            } else {
+                GLog.i(Messages.get(this, "nowater")); // Waterskin voll
+            }
         } else {
             GLog.i(Messages.get(this, "nowater"));
         }
@@ -103,6 +111,32 @@ public class Sponge extends Artifact {
 
     @Override
     protected ArtifactBuff passiveBuff() {
-        return new ArtifactBuff();
+        return new SpongeBuff();
+    }
+
+    public class SpongeBuff extends ArtifactBuff {
+        private int tickCounter = 0;
+        @Override
+        public boolean act() {
+            if (cursed) {
+                spend(TICK);
+                return true;
+            }
+            if (waterDrops < MAX_DROPS && target != null && target.isAlive() && Dungeon.depth > 0) {
+                tickCounter++;
+                if (tickCounter >= 20) {
+                    waterDrops = Math.min(MAX_DROPS, waterDrops + 1);
+                    updateSprite();
+                    tickCounter = 0;
+                }
+            }
+            spend(TICK);
+            return true;
+        }
+    }
+
+    @Override
+    public String status() {
+        return waterDrops + "/" + MAX_DROPS;
     }
 }
