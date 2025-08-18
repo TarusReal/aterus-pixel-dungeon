@@ -14,12 +14,13 @@ public class Sponge extends Artifact {
 
     private static final int MAX_DROPS = 30;
     private static final int TRANSFER_LIMIT = 20;
-    private int waterDrops = 0;
+    private int waterDrops = 30;
     private int tickCounter = 0;
 
     public Sponge() {
         super();
-        image = ItemSpriteSheet.SPONGE1;
+        // Bild passend zum Wasserstand setzen
+        updateSprite();
         // Beschreibung und weitere Initialisierung folgt
         defaultAction = "WRING_OUT";
     }
@@ -50,6 +51,7 @@ public class Sponge extends Artifact {
         } else {
             image = ItemSpriteSheet.SPONGE3;
         }
+        Item.updateQuickslot();
     }
 
     public void wringOut(Hero hero) {
