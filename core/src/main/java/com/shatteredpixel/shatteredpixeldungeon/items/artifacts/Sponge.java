@@ -24,11 +24,16 @@ public class Sponge extends Artifact {
         defaultAction = "WRING_OUT";
     }
 
+    @Override
+    public boolean doEquip(Hero hero) {
+        return super.doEquip(hero);
+    }
+
     public void update() {
         if (isEquipped(Dungeon.hero) && waterDrops < MAX_DROPS) {
             if (Dungeon.hero.isAlive() && Dungeon.depth > 0) {
                 tickCounter++;
-                if (tickCounter >= 20) {
+                if (tickCounter >= 40) {
                     waterDrops = Math.min(MAX_DROPS, waterDrops + 1);
                     updateSprite();
                     tickCounter = 0;
@@ -68,7 +73,7 @@ public class Sponge extends Artifact {
                     GLog.i(Messages.get(this, "WRING_OUT", canTransfer));
                 }
             } else {
-                GLog.i(Messages.get(this, "nowater")); // Waterskin voll
+                GLog.i(Messages.get(this, "waterskinfull")); // Waterskin voll
             }
         } else {
             GLog.i(Messages.get(this, "nowater"));
@@ -96,7 +101,9 @@ public class Sponge extends Artifact {
     @Override
     public java.util.ArrayList<String> actions(Hero hero) {
         java.util.ArrayList<String> actions = super.actions(hero);
-        actions.add("WRING_OUT");
+        if (isEquipped(hero)) {
+            actions.add("WRING_OUT");
+        }
         return actions;
     }
 
@@ -124,7 +131,7 @@ public class Sponge extends Artifact {
             }
             if (waterDrops < MAX_DROPS && target != null && target.isAlive() && Dungeon.depth > 0) {
                 tickCounter++;
-                if (tickCounter >= 20) {
+                if (tickCounter >= 40) {
                     waterDrops = Math.min(MAX_DROPS, waterDrops + 1);
                     updateSprite();
                     tickCounter = 0;
@@ -137,6 +144,6 @@ public class Sponge extends Artifact {
 
     @Override
     public String status() {
-        return waterDrops + "/" + MAX_DROPS;
+        return isIdentified() ? (waterDrops + "/" + MAX_DROPS) : "";
     }
 }

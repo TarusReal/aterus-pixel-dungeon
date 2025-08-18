@@ -84,6 +84,8 @@ import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.utils.DeviceCompat;
 
+import java.sql.Time;
+
 public enum HeroClass {
 
 	WARRIOR( HeroSubClass.BERSERKER, HeroSubClass.GLADIATOR ),
@@ -154,6 +156,7 @@ public enum HeroClass {
 			new ScrollOfChallenge().collect();
 			new PotionBandolier().collect();
 			new Sponge().collect();
+			new TimekeepersHourglass().collect();
 		}
 
 		switch (this) {
