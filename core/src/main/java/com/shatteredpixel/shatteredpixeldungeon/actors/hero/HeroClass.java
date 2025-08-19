@@ -72,6 +72,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.*;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfForecast;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.BookOfNecromancy;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Cudgel;
@@ -154,6 +155,8 @@ public enum HeroClass {
 			new Sponge().collect();
 			new TimekeepersHourglass().collect();
 			new JarOfVoid().collect();
+			new BookOfNecromancy().collect();
+			///new ScrollOfForesight().collect();
 			//new ScrollOfWisdom().collect();
 			//new ScrollOfShattering().collect();
 			//new ScrollOfRevelation().collect();

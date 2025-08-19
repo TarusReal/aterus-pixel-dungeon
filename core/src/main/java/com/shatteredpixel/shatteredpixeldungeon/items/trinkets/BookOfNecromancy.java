@@ -8,32 +8,51 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 public class BookOfNecromancy extends Trinket {
 
 	{
-		image = ItemSpriteSheet.BOOK_OF_NECROMANCY; // Du musst das Sprite ggf. noch hinzufügen
+		image = ItemSpriteSheet.BOOK_OF_NECROMANCY;
+
 	}
 
 	@Override
 	protected int upgradeEnergyCost() {
-		return 8 + 2 * level();
+		return 7 + 2 * level();
 	}
 
 	@Override
 	public String statsDesc() {
 		if (isIdentified()){
-			return Messages.get(this, "stats_desc", Messages.decimalFormat("#.##", 100 * reviveChance(buffedLvl())));
+			return Messages.get(this,
+					"stats_desc",
+					Messages.decimalFormat("#.##", 100*(allyReviveChance())),
+					Messages.decimalFormat("#.##", 100*(enemyReviveChance())));
 		} else {
-			return Messages.get(this, "typical_stats_desc", Messages.decimalFormat("#.##", 100 * reviveChance(0)));
+			return Messages.get(this,
+					"typical_stats_desc",
+					Messages.decimalFormat("#.##", 100*(allyReviveChance(0))),
+					Messages.decimalFormat("#.##", 100*(enemyReviveChance(0))));
+
 		}
 	}
 
-	public static float reviveChance() {
-		return reviveChance(trinketLevel(BookOfNecromancy.class));
+	public static float allyReviveChance() {
+		return allyReviveChance(trinketLevel(BookOfNecromancy.class)+1);
 	}
 
-	public static float reviveChance(int level) {
+	public static float allyReviveChance(int level) {
 		if (level <= -1) {
 			return 0f;
 		} else {
 			return 0.10f + 0.05f * level; // 10% Basis, +5% pro Level
+		}
+	}
+	public static float enemyReviveChance() {
+		return  enemyReviveChance(trinketLevel(BookOfNecromancy.class)+1);
+	}
+
+	public static float enemyReviveChance(int level) {
+		if (level <= -1) {
+			return 0f;
+		} else {
+			return 0.05f + 0.03f * level; // 10% Basis, +5% pro Level
 		}
 	}
 
