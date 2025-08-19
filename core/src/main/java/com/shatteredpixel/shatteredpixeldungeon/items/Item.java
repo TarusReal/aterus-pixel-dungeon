@@ -195,99 +195,72 @@ public class Item implements Bundlable {
 	}
 	
 	//takes two items and merges them (if possible)
-	public Item merge( Item other ){
-		if (isSimilar( other )){
+	/**
+	 * Merges another item into this one if they are of the same type.
+	 * @param other The item to merge into this one
+	 * @return This item with the merged quantity, or null if items couldn't be merged
+	 */
+	public Item merge(Item other) {
+		if (isSimilar(other)) {
 			quantity += other.quantity;
 			other.quantity = 0;
+			return this;
 		}
-		return this;
+		return null;
 	}
 	
 	public boolean collect( Bag container ) {
-		String itemClass = getClass().getSimpleName();
-		GLog.i("Attempting to collect item: " + itemClass + " into " + container.getClass().getSimpleName());
-
 		if (quantity <= 0){
-			GLog.i(itemClass + " collection failed: quantity <= 0");
 			return true;
 		}
 
 		ArrayList<Item> items = container.items;
 
 		if (items.contains( this )) {
-			GLog.i(itemClass + " already in container, collection successful");
 			return true;
 		}
 
-		GLog.i("Checking if " + itemClass + " can be placed in a sub-bag");
 		for (Item item:items) {
 			if (item instanceof Bag && ((Bag)item).canHold( this )) {
-				GLog.i("Trying to place " + itemClass + " in sub-bag: " + item.getClass().getSimpleName());
 				if (collect( (Bag)item )){
 					return true;
 				}
 			}
 		}
 
-		if (!container.canHold(this)){
-			GLog.w(itemClass + " collection failed: container cannot hold item");
-			return false;
-		}
-		
 		if (stackable) {
-			GLog.i("Checking for similar stackable items to merge with");
 			for (Item item:items) {
 				if (isSimilar( item )) {
-					GLog.i("Merging with similar item: " + itemClass);
 					item.merge( this );
 					item.updateQuickslot();
 					if (Dungeon.hero != null && Dungeon.hero.isAlive()) {
 						Badges.validateItemLevelAquired( this );
-						Talent.onItemCollected(Dungeon.hero, item);
+						Talent.onItemCollected( Dungeon.hero, this );
 						if (isIdentified()) {
 							Catalog.setSeen(getClass());
-							Statistics.itemTypesDiscovered.add(getClass());
+							/*if (Dungeon.hero.hasTalent(Talent.ALL_YOURS)) {
+								//just update the icon while preserving flashes
+								ItemSprite.view(item);
+							} <- BÖSER CODE*/
 						}
 					}
-					if (TippedDart.lostDarts > 0){
-						Dart d = new Dart();
-						d.quantity(TippedDart.lostDarts);
-						TippedDart.lostDarts = 0;
-						if (!d.collect()){
-							//have to handle this in an actor as we can't manipulate the heap during pickup
-							Actor.add(new Actor() {
-								{ actPriority = VFX_PRIO; }
-								@Override
-								protected boolean act() {
-									Dungeon.level.drop(d, Dungeon.hero.pos).sprite.drop();
-									Actor.remove(this);
-									return true;
-								}
-							});
-						}
-					}
-					GLog.i(itemClass + " merged successfully");
 					return true;
 				}
 			}
 		}
 
 		if (Dungeon.hero != null && Dungeon.hero.isAlive()) {
-			GLog.i("Updating badges and stats for " + itemClass);
 			Badges.validateItemLevelAquired( this );
 			Talent.onItemCollected( Dungeon.hero, this );
 			if (isIdentified()){
 				Catalog.setSeen(getClass());
-				Statistics.itemTypesDiscovered.add(getClass());
 			}
 		}
 
-		GLog.i("Adding " + itemClass + " to container");
 		items.add( this );
 		Dungeon.quickslot.replacePlaceholder(this);
 		Collections.sort( items, itemComparator );
 		updateQuickslot();
-		GLog.i(itemClass + " collection completed successfully");
 		return true;
 	}
 	
