@@ -48,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.He
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Shockwave;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.JarOfVoid;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.*;
@@ -152,6 +153,7 @@ public enum HeroClass {
 			new PotionBandolier().collect();
 			new Sponge().collect();
 			new TimekeepersHourglass().collect();
+			new JarOfVoid().collect();
 			//new ScrollOfWisdom().collect();
 			//new ScrollOfShattering().collect();
 			//new ScrollOfRevelation().collect();

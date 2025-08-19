@@ -41,6 +41,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GreaterHaste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.NoXPBuff;
+import com.shatteredpixel.shatteredpixeldungeon.items.JarOfVoid;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
@@ -794,9 +796,7 @@ public abstract class Mob extends Char {
 		return enemy == ch;
 	}
 
-	@Override
 	public void damage( int dmg, Object src ) {
-
 		if (!isInvulnerable(src.getClass())) {
 			if (state == SLEEPING) {
 				state = WANDERING;
@@ -821,6 +821,8 @@ public abstract class Mob extends Char {
 	}
 	
 	
+	private Object causeOfDeath;
+
 	@Override
 	public void destroy() {
 		
@@ -844,7 +846,10 @@ public abstract class Mob extends Char {
 
 				AscensionChallenge.processEnemyKill(this);
 				
-				int exp = Dungeon.hero.lvl <= maxLvl ? EXP : 0;
+				// No XP if killed by Jar of Void or if NoXPBuff is present
+				boolean noXP = (causeOfDeath != null && causeOfDeath.getClass() == JarOfVoid.class) || 
+						   buff(NoXPBuff.class) != null;
+				int exp = (!noXP && Dungeon.hero.lvl <= maxLvl) ? EXP : 0;
 
 				//during ascent, under-levelled enemies grant 10 xp each until level 30
 				// after this enemy kills which reduce the amulet curse still grant 10 effective xp
@@ -868,6 +873,8 @@ public abstract class Mob extends Char {
 	
 	@Override
 	public void die( Object cause ) {
+		// Store the cause of death for XP calculation
+		this.causeOfDeath = cause;
 
 		if (cause == Chasm.class){
 			//50% chance to round up, 50% to round down

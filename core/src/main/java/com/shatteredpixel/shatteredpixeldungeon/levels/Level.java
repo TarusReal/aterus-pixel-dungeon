@@ -511,6 +511,14 @@ public abstract class Level implements Bundlable {
 		ChampionEnemy.rollForChampion(m);
 		return m;
 	}
+	
+	/**
+	 * Clears the list of mobs waiting to be spawned.
+	 * This prevents any new mobs from spawning on the level.
+	 */
+	public void clearMobsToSpawn() {
+		mobsToSpawn.clear();
+	}
 
 	abstract protected void createMobs();
 
