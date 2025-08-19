@@ -502,6 +502,10 @@ public class ItemSpriteSheet {
 	public static final int OBLIVION_SHARD  = TRINKETS+13;
 	public static final int CHAOTIC_CENSER  = TRINKETS+14;
 	public static final int FERRET_TUFT     = TRINKETS+15;
+	public static final int CHALICE_MUD1   = TRINKETS+16;
+	public static final int CHALICE_MUD2   = TRINKETS+17;
+	public static final int	CHALICE_MUD3   = TRINKETS+18;
+	public static final int	 BOOK_OF_NECROMANCY  = TRINKETS+19;
 	static{
 		assignItemRect(RAT_SKULL,       16, 11);
 		assignItemRect(PARCHMENT_SCRAP, 10, 14);
@@ -519,6 +523,11 @@ public class ItemSpriteSheet {
 		assignItemRect(OBLIVION_SHARD,  7,  14);
 		assignItemRect(CHAOTIC_CENSER,  13, 15);
 		assignItemRect(FERRET_TUFT,     16, 15);
+		assignItemRect(CHALICE_MUD1,     12, 15);
+		assignItemRect(CHALICE_MUD2,     12, 15);
+		assignItemRect(CHALICE_MUD3,     12, 15);
+		assignItemRect(BOOK_OF_NECROMANCY,14, 16);
+
 	}
 
 	private static final int SCROLLS        =                               xy(1, 19);  //16 slots

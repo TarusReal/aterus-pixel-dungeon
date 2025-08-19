@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Berry;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MudSnakeSprite;
 import com.watabou.utils.Random;
@@ -62,10 +63,17 @@ public class MudSnake extends Snake {
                     Dungeon.level.drop(new Dewdrop(), pos).sprite.drop();
                     break;
                 case 2:
-                    //todo rosenblatt falls Rose
-                    Dungeon.level.drop(new Berry(), pos).sprite.drop();
-                    break;
+                    Dungeon.level.drop(new Dewdrop(), pos).sprite.drop();
+                    Dungeon.level.drop(new Dewdrop(), pos).sprite.drop();
                 case 3:
+                    DriedRose rose =Dungeon.hero.belongings.getItem( DriedRose.class );
+                    if(rose!=null&&rose.droppedPetals < 10) {
+                        Dungeon.level.drop(new DriedRose.Petal(), pos).sprite.drop();
+                        rose.droppedPetals++;
+                    } else {
+                        Dungeon.level.drop(new Berry(), pos).sprite.drop();
+                    }
+                    break;
                 case 4:
                     //nothing
                     break;
