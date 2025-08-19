@@ -41,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -203,19 +204,25 @@ public class Item implements Bundlable {
 	}
 	
 	public boolean collect( Bag container ) {
+		String itemClass = getClass().getSimpleName();
+		GLog.i("Attempting to collect item: " + itemClass + " into " + container.getClass().getSimpleName());
 
 		if (quantity <= 0){
+			GLog.i(itemClass + " collection failed: quantity <= 0");
 			return true;
 		}
 
 		ArrayList<Item> items = container.items;
 
 		if (items.contains( this )) {
+			GLog.i(itemClass + " already in container, collection successful");
 			return true;
 		}
 
+		GLog.i("Checking if " + itemClass + " can be placed in a sub-bag");
 		for (Item item:items) {
 			if (item instanceof Bag && ((Bag)item).canHold( this )) {
+				GLog.i("Trying to place " + itemClass + " in sub-bag: " + item.getClass().getSimpleName());
 				if (collect( (Bag)item )){
 					return true;
 				}
@@ -223,12 +230,15 @@ public class Item implements Bundlable {
 		}
 
 		if (!container.canHold(this)){
+			GLog.w(itemClass + " collection failed: container cannot hold item");
 			return false;
 		}
 		
 		if (stackable) {
+			GLog.i("Checking for similar stackable items to merge with");
 			for (Item item:items) {
 				if (isSimilar( item )) {
+					GLog.i("Merging with similar item: " + itemClass);
 					item.merge( this );
 					item.updateQuickslot();
 					if (Dungeon.hero != null && Dungeon.hero.isAlive()) {
@@ -256,12 +266,14 @@ public class Item implements Bundlable {
 							});
 						}
 					}
+					GLog.i(itemClass + " merged successfully");
 					return true;
 				}
 			}
 		}
 
 		if (Dungeon.hero != null && Dungeon.hero.isAlive()) {
+			GLog.i("Updating badges and stats for " + itemClass);
 			Badges.validateItemLevelAquired( this );
 			Talent.onItemCollected( Dungeon.hero, this );
 			if (isIdentified()){
@@ -270,12 +282,13 @@ public class Item implements Bundlable {
 			}
 		}
 
+		GLog.i("Adding " + itemClass + " to container");
 		items.add( this );
 		Dungeon.quickslot.replacePlaceholder(this);
 		Collections.sort( items, itemComparator );
 		updateQuickslot();
+		GLog.i(itemClass + " collection completed successfully");
 		return true;
-
 	}
 	
 	public final boolean collect() {
