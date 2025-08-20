@@ -130,6 +130,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfTenacity;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.BookOfNecromancy;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ThirteenLeafClover;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
@@ -1497,7 +1498,14 @@ public class Hero extends Char {
 			break;
 		default:
 		}
-		
+		// BookOfNecromancy: Prüfe ob ein Gegner durch den Spieler getötet wurde und versuche Wiederbelebung
+		if (damage >= enemy.HP && enemy.isAlive()) {
+			if(BookOfNecromancy.tryRevive( enemy, damage))
+			{
+				damage=0;
+			}
+		}
+
 		return damage;
 	}
 	

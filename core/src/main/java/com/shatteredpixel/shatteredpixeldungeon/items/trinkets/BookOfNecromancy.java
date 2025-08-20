@@ -1,9 +1,15 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.trinkets;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.*;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.watabou.utils.Random;
 
 public class BookOfNecromancy extends Trinket {
 
@@ -11,7 +17,7 @@ public class BookOfNecromancy extends Trinket {
 		image = ItemSpriteSheet.BOOK_OF_NECROMANCY;
 
 	}
-
+	private static ItemSprite.Glowing BLACK = new ItemSprite.Glowing( 0x440066 );
 	@Override
 	protected int upgradeEnergyCost() {
 		return 7 + 2 * level();
@@ -55,7 +61,42 @@ public class BookOfNecromancy extends Trinket {
 			return 0.05f + 0.03f * level; // 10% Basis, +5% pro Level
 		}
 	}
+	@Override
+	public ItemSprite.Glowing glowing() {
+		return BLACK;
+	}
 
+	public static boolean tryRevive( Char defender, int damage) {
+		if(trinketLevel(BookOfNecromancy.class)<0 || defender == null) {
+			return false;
+		}
+		float randomf=Random.Float();
+		if (damage >= defender.HP
+				&& randomf <= allyReviveChance()+enemyReviveChance()
+				&& !defender.isImmune(Corruption.class)
+				&& defender.buff(Corruption.class) == null
+				&& defender instanceof Mob
+				&& defender.isAlive()){
+
+			Mob enemy = (Mob) defender;
+			Hero hero = Dungeon.hero;
+
+
+			if(randomf<=allyReviveChance()) {
+				Corruption.corruptionHeal(enemy);
+				AllyBuff.affectAndLoot(enemy, hero, Corruption.class);
+			}
+			else
+			{
+				Undead.heal(enemy);
+				Buff.affect(enemy, Undead.class);
+				System.out.println("respawn dead");
+			}
+			return true;
+		}
+
+		return false;
+	}
 	// Diese Methode sollte beim Tod eines Feindes aufgerufen werden
 	/*public static void tryRevive(Mob mob) {
 		if (mob != null && Math.random() < reviveChance()) {
