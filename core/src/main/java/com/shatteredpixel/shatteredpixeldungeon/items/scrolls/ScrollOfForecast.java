@@ -1,15 +1,18 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.scrolls;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
-
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 
 public class ScrollOfForecast extends Scroll {
 
@@ -27,9 +30,21 @@ public class ScrollOfForecast extends Scroll {
 
     @Override
     public void doRead() {
-        // Save the hero's current state
+        // Save the entire game state
         Bundle bundle = new Bundle();
+        bundle.put(LEVEL, Dungeon.level);  // Save the current level
         Dungeon.hero.storeInBundle(bundle);
+
+        // Store hero's position separately
+        bundle.put("pos", Dungeon.hero.pos);
+        
+        // Store buffs that shouldn't be duplicated
+        float hungerLvl = 0;
+        Hunger hunger = Dungeon.hero.buff(Hunger.class);
+        if (hunger != null) {
+            hungerLvl = hunger.hunger();
+        }
+        bundle.put("hunger", hungerLvl);
 
         // Apply the rewind buff
         RewindBuff rewind = Buff.affect(Dungeon.hero, RewindBuff.class);
@@ -62,7 +77,32 @@ public class ScrollOfForecast extends Scroll {
             if (turnsLeft <= 0) {
                 // Time to rewind!
                 if (rewindData != null) {
+                    // Clear existing buffs to prevent duplication
+                    for (Buff buff : Dungeon.hero.buffs()) {
+                        if (!(buff instanceof RewindBuff)) {
+                            buff.detach();
+                        }
+                    }
+                    
+                    // Restore the level state first
+                    Dungeon.level = (Level) rewindData.get("level");
+                    
+                    // Then restore hero state
                     Dungeon.hero.restoreFromBundle(rewindData);
+                    
+                    // Restore hunger state if it existed
+                    if (rewindData.contains("hunger")) {
+                        float hungerLvl = rewindData.getFloat("hunger");
+                        if (hungerLvl > 0) {
+                            Hunger hunger = Buff.affect(Dungeon.hero, Hunger.class);
+                            hunger.affectHunger(hungerLvl - hunger.hunger(), true);
+                        }
+                    }
+                    
+                    // Now that everything is restored, update the game scene
+                    Dungeon.observe();
+                    GameScene.updateMap();
+                    
                     GLog.w(Messages.get(this, "rewind"));
                 }
                 detach();

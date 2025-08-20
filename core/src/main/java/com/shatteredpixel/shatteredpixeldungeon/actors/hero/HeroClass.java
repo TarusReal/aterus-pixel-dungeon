@@ -138,14 +138,14 @@ public enum HeroClass {
 			new LloydsBeacon().collect();
 			new UnstableSpellbook().collect();
 			new ScrollOfIdentify().collect();
-			new ScrollOfLullaby().collect();
+			/*new ScrollOfLullaby().collect();
 			new ScrollOfMagicMapping().collect();
 			new ScrollOfMirrorImage().collect();
 			new ScrollOfRage().collect();
 			new ScrollOfRemoveCurse().collect();
 			new ScrollOfUpgrade().collect();
 			new ScrollOfRecharging().collect();
-			new ScrollOfTeleportation().collect();
+			new ScrollOfTeleportation().collect();*/
 			new ScrollOfTerror().collect();
 			new ScrollOfForecast().collect();
 			new ScrollHolder().collect();
