@@ -39,6 +39,7 @@ import com.watabou.utils.Point;
 
 import org.lwjgl.util.tinyfd.TinyFileDialogs;
 
+import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Locale;
@@ -144,49 +145,109 @@ public class DesktopLauncher {
 		
 		config.setTitle( title );
 
-		//if I were implementing this from scratch I would use the full implementation title for saves
-		// (e.g. /.shatteredpixel/shatteredpixeldungeon), but we have too much existing save
-		// date to worry about transferring at this point.
-		// ...
-		String vendor = DesktopLauncher.class.getPackage().getImplementationTitle();
-		if (vendor == null) {
-			vendor = System.getProperty("Implementation-Title");
-		}
-		if (vendor == null) {
-			vendor = "shatteredpixel"; // Standardwert
-		}
-		String[] vendorParts = vendor.split("\\.");
-		if (vendorParts.length > 1) {
-			vendor = vendorParts[1];
-		} else {
-			vendor = vendorParts[0]; // Fallback: erstes Element verwenden
-		}
+		// Use a fixed vendor name to ensure consistent save location
+		// Ensure we have a valid title and vendor name
+		String vendor = "shatteredpixel";
+		String gameTitle = title != null && !title.trim().isEmpty() ? title : "AterusPixelDungeon";
+		System.out.println("Using vendor name: " + vendor + ", game title: " + gameTitle);
+		
+		// Update the window title
+		config.setTitle(gameTitle);
 
 		String basePath = "";
 		Files.FileType baseFileType = null;
+		String userHome = System.getProperty("user.home");
+		
 		if (SharedLibraryLoader.isWindows) {
-			if (System.getProperties().getProperty("os.name").equals("Windows XP")) {
-				basePath = "Application Data/." + vendor + "/" + title + "/";
+			String appData = System.getenv("APPDATA");
+			if (appData == null || appData.trim().isEmpty()) {
+				if (System.getProperties().getProperty("os.name").equals("Windows XP")) {
+					basePath = userHome + "/Application Data/" + vendor + "/" + gameTitle + "/";
+				} else {
+					basePath = userHome + "/AppData/Roaming/" + vendor + "/" + gameTitle + "/";
+				}
 			} else {
-				basePath = "AppData/Roaming/." + vendor + "/" + title + "/";
+				basePath = appData + "/" + vendor + "/" + gameTitle + "/";
 			}
-			baseFileType = Files.FileType.External;
+			baseFileType = Files.FileType.Absolute;
 		} else if (SharedLibraryLoader.isMac) {
-			basePath = "Library/Application Support/" + title + "/";
-			baseFileType = Files.FileType.External;
+			basePath = userHome + "/Library/Application Support/" + gameTitle + "/";
+			baseFileType = Files.FileType.Absolute;
 		} else if (SharedLibraryLoader.isLinux) {
 			String XDGHome = System.getenv("XDG_DATA_HOME");
-			if (XDGHome == null) XDGHome = System.getProperty("user.home") + "/.local/share";
+			if (XDGHome == null || XDGHome.trim().isEmpty()) {
+				XDGHome = userHome + "/.local/share";
+			}
 
-			String titleLinux = title.toLowerCase(Locale.ROOT).replace(" ", "-");
-			basePath = XDGHome + "/." + vendor + "/" + titleLinux + "/";
-
+			String titleLinux = gameTitle.toLowerCase(Locale.ROOT).replace(" ", "-");
+			basePath = XDGHome + "/" + vendor + "/" + titleLinux + "/";
 			baseFileType = Files.FileType.Absolute;
 		}
+		
+		// Ensure the directory exists with proper permissions
+		File saveDir = new File(basePath);
+		System.out.println("Attempting to create/access save directory: " + saveDir.getAbsolutePath());
+		
+		if (!saveDir.exists()) {
+			System.out.println("Save directory doesn't exist, creating...");
+			boolean dirsCreated = saveDir.mkdirs();
+			if (!dirsCreated) {
+				System.err.println("WARNING: Failed to create save directory at: " + saveDir.getAbsolutePath());
+				System.err.println("Check if you have write permissions to this location.");
+			} else {
+				System.out.println("Successfully created save directory at: " + saveDir.getAbsolutePath());
+				// Set directory permissions if possible
+				try {
+					saveDir.setReadable(true, false);
+					saveDir.setWritable(true, false);
+					saveDir.setExecutable(true, false);
+				} catch (SecurityException e) {
+					System.err.println("WARNING: Could not set permissions on save directory: " + e.getMessage());
+				}
+			}
+		} else {
+			System.out.println("Save directory already exists at: " + saveDir.getAbsolutePath());
+			// Verify write permissions
+			if (!saveDir.canWrite()) {
+				System.err.println("WARNING: No write permissions for save directory: " + saveDir.getAbsolutePath());
+			}
+		}
 
-		config.setPreferencesConfig( basePath, baseFileType );
-		SPDSettings.set( new Lwjgl3Preferences( new Lwjgl3FileHandle(basePath + SPDSettings.DEFAULT_PREFS_FILE, baseFileType) ));
-		FileUtils.setDefaultFileProperties( baseFileType, basePath );
+		// Normalize paths for Windows
+		if (SharedLibraryLoader.isWindows) {
+			basePath = basePath.replace('\\', '/');
+		}
+		
+		try {
+			// Set up file handling
+			System.out.println("Configuring file handling with path: " + basePath + " and type: " + baseFileType);
+			config.setPreferencesConfig(basePath, baseFileType);
+			
+			String prefsPath = basePath + SPDSettings.DEFAULT_PREFS_FILE;
+			System.out.println("Loading preferences from: " + prefsPath);
+			Lwjgl3FileHandle prefsFile = new Lwjgl3FileHandle(prefsPath, baseFileType);
+			SPDSettings.set(new Lwjgl3Preferences(prefsFile));
+			
+			System.out.println("Setting default file properties...");
+			FileUtils.setDefaultFileProperties(baseFileType, basePath);
+			
+			// Verify the save directory is writable by creating a test file
+			try {
+				File testFile = new File(saveDir, "test_write.tmp");
+				if (testFile.createNewFile()) {
+					testFile.delete();
+					System.out.println("Verified write access to save directory");
+				} else {
+					System.err.println("WARNING: Could not create test file in save directory");
+				}
+			} catch (Exception e) {
+				System.err.println("WARNING: Failed to verify write access to save directory: " + e.getMessage());
+			}
+			
+		} catch (Exception e) {
+			System.err.println("ERROR: Failed to initialize file handling: " + e.getMessage());
+			e.printStackTrace();
+		}
 		
 		config.setWindowSizeLimits( 720, 400, -1, -1 );
 		Point p = SPDSettings.windowResolution();

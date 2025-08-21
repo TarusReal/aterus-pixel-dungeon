@@ -29,198 +29,362 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class FileUtils {
-	
-	// Helper methods for setting/using a default base path and file address mode
-	
-	private static Files.FileType defaultFileType = null;
-	private static String defaultPath = "";
-	
-	public static void setDefaultFileProperties( Files.FileType type, String path ){
-		defaultFileType = type;
-		defaultPath = path;
-	}
-	
-	public static FileHandle getFileHandle( String name ){
-		return getFileHandle( defaultFileType, defaultPath, name );
-	}
-	
-	public static FileHandle getFileHandle( Files.FileType type, String name ){
-		return getFileHandle( type, "", name );
-	}
-	
-	public static FileHandle getFileHandle( Files.FileType type, String basePath, String name ){
-		switch (type){
-			case Classpath:
-				return Gdx.files.classpath( basePath + name );
-			case Internal:
-				return Gdx.files.internal( basePath + name );
-			case External:
-				return Gdx.files.external( basePath + name );
-			case Absolute:
-				return Gdx.files.absolute( basePath + name );
-			case Local:
-				return Gdx.files.local( basePath + name );
-			default:
-				return null;
-		}
-	}
-	
-	// Files
+    
+    /**
+     * Calculates a SHA-256 checksum for a file
+     * @param file The file to calculate checksum for
+     * @return Hex string of the checksum
+     * @throws IOException If an I/O error occurs
+     */
+    public static String calculateChecksum(FileHandle file) throws IOException {
+        try (InputStream is = file.read()) {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] buffer = new byte[8192];
+            int read;
+            while ((read = is.read(buffer)) > 0) {
+                digest.update(buffer, 0, read);
+            }
+            byte[] hash = digest.digest();
+            StringBuilder hex = new StringBuilder();
+            for (byte b : hash) {
+                String h = Integer.toHexString(0xff & b);
+                if (h.length() == 1) hex.append('0');
+                hex.append(h);
+            }
+            return hex.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new IOException("Failed to calculate checksum", e);
+        }
+    }
+    
+    /**
+     * Validates that a file exists and has content
+     * @param file The file to validate
+     * @return true if the file is valid, false otherwise
+     */
+    public static boolean validateFile(FileHandle file) {
+        return file != null && file.exists() && !file.isDirectory() && file.length() > 0;
+    }
+    
+    private static final String TAG = "FileUtils";
+    private static Files.FileType defaultFileType = null;
+    private static String defaultPath = "";
+    
+    private static void log(String message) {
+        if (Gdx.app != null) {
+            Gdx.app.log(TAG, message);
+        } else {
+            // Fallback to system out if Gdx.app is not initialized yet
+            System.out.println("[" + TAG + "] " + message);
+        }
+    }
+    
+    private static void error(String message, Throwable e) {
+        if (Gdx.app != null) {
+            Gdx.app.error(TAG, message, e);
+        } else {
+            // Fallback to system err if Gdx.app is not initialized yet
+            System.err.println("[" + TAG + " ERROR] " + message);
+            if (e != null) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    public static void setDefaultFileProperties(Files.FileType type, String path) {
+        log("Setting default file properties - Type: " + type + ", Path: " + path);
+        defaultFileType = type;
+        defaultPath = path;
+    }
+    
+    public static FileHandle getFileHandle(String name) {
+        return getFileHandle(defaultFileType, defaultPath, name);
+    }
+    
+    public static FileHandle getFileHandle(Files.FileType type, String name) {
+        return getFileHandle(type, "", name);
+    }
+    
+    public static FileHandle getFileHandle(Files.FileType type, String basePath, String name) {
+        try {
+            switch (type) {
+                case Classpath:
+                    return Gdx.files.classpath(basePath + name);
+                case Internal:
+                    return Gdx.files.internal(basePath + name);
+                case External:
+                    return Gdx.files.external(basePath + name);
+                case Absolute:
+                    return Gdx.files.absolute(basePath + name);
+                case Local:
+                    return Gdx.files.local(basePath + name);
+                default:
+                    error("Unknown file type: " + type, null);
+                    return null;
+            }
+        } catch (Exception e) {
+            error("Error getting file handle for " + basePath + name, e);
+            return null;
+        }
+    }
 
-	//looks to see if there is any evidence of interrupted saving
-	public static boolean cleanTempFiles(){
-		return cleanTempFiles("");
-	}
+    // File operations
 
-	public static boolean cleanTempFiles( String dirName ){
-		FileHandle dir = getFileHandle(dirName);
-		boolean foundTemp = false;
-		for (FileHandle file : dir.list()){
-			if (file.isDirectory()){
-				foundTemp = cleanTempFiles(dirName + file.name()) || foundTemp;
-			} else if (file.length() == 0) {
-				file.delete();
-			} else {
-				if (file.name().endsWith(".tmp")){
-					FileHandle temp = file;
-					FileHandle original = getFileHandle( defaultFileType, "", temp.path().replace(".tmp", "") );
+    public static boolean fileExists(String name) {
+        try {
+            FileHandle file = getFileHandle(name);
+            return file != null && file.exists() && !file.isDirectory() && file.length() > 0;
+        } catch (Exception e) {
+            error("Error checking if file exists: " + name, e);
+            return false;
+        }
+    }
 
-					//replace the base file with the temp one if base is invalid or temp is valid and newer
-					try {
-						bundleFromStream(temp.read());
+    public static long fileLength(String name) {
+        try {
+            FileHandle file = getFileHandle(name);
+            if (file == null || !file.exists() || file.isDirectory()) {
+                return 0;
+            } else {
+                return file.length();
+            }
+        } catch (Exception e) {
+            error("Error getting file length for: " + name, e);
+            return 0;
+        }
+    }
 
-						try {
-							bundleFromStream(original.read());
+    public static boolean deleteFile(String name) {
+        try {
+            FileHandle file = getFileHandle(name);
+            return file != null && file.exists() && file.delete();
+        } catch (Exception e) {
+            error("Error deleting file: " + name, e);
+            return false;
+        }
+    }
 
-							if (temp.lastModified() > original.lastModified()) {
-								temp.moveTo(original);
-							} else {
-								temp.delete();
-							}
+    public static void overwriteFile(String name, int bytes) {
+        try {
+            byte[] data = new byte[bytes];
+            Arrays.fill(data, (byte) 1);
+            FileHandle file = getFileHandle(name);
+            if (file != null) {
+                file.writeBytes(data, false);
+            }
+        } catch (Exception e) {
+            error("Error overwriting file: " + name, e);
+        }
+    }
 
-						} catch (Exception e) {
-							temp.moveTo(original);
-						}
+    // Directory operations
 
-					} catch (Exception e) {
-						temp.delete();
-					}
+    public static boolean dirExists(String name) {
+        try {
+            FileHandle dir = getFileHandle(name);
+            return dir != null && dir.exists() && dir.isDirectory();
+        } catch (Exception e) {
+            error("Error checking if directory exists: " + name, e);
+            return false;
+        }
+    }
 
-					foundTemp = true;
-				}
-			}
-		}
-		return foundTemp;
-	}
-	
-	public static boolean fileExists( String name ){
-		FileHandle file = getFileHandle( name );
-		return file.exists() && !file.isDirectory() && file.length() > 0;
-	}
+    public static boolean deleteDir(String name) {
+        try {
+            FileHandle dir = getFileHandle(name);
+            return dir != null && dir.isDirectory() && dir.deleteDirectory();
+        } catch (Exception e) {
+            error("Error deleting directory: " + name, e);
+            return false;
+        }
+    }
 
-	//returns length of a file in bytes, or 0 if file does not exist
-	public static long fileLength( String name ){
-		FileHandle file = getFileHandle( name );
-		if (!file.exists() || file.isDirectory()){
-			return 0;
-		} else {
-			return file.length();
-		}
-	}
-	
-	public static boolean deleteFile( String name ){
-		return getFileHandle( name ).delete();
-	}
+    public static ArrayList<String> filesInDir(String name) {
+        try {
+            FileHandle dir = getFileHandle(name);
+            ArrayList<String> result = new ArrayList<>();
+            if (dir != null && dir.isDirectory()) {
+                for (FileHandle file : dir.list()) {
+                    result.add(file.name());
+                }
+            }
+            return result;
+        } catch (Exception e) {
+            error("Error listing files in directory: " + name, e);
+            return new ArrayList<>();
+        }
+    }
 
-	//replaces a file with junk data, for as many bytes as given
-	//This is helpful as some cloud sync systems do not persist deleted, empty, or zeroed files
-	public static void overwriteFile( String name, int bytes ){
-		byte[] data = new byte[bytes];
-		Arrays.fill(data, (byte)1);
-		getFileHandle( name ).writeBytes(data, false);
-	}
-	
-	// Directories
-	
-	public static boolean dirExists( String name ){
-		FileHandle dir = getFileHandle( name );
-		return dir.exists() && dir.isDirectory();
-	}
-	
-	public static boolean deleteDir( String name ){
-		FileHandle dir = getFileHandle( name );
-		
-		if (dir == null || !dir.isDirectory()){
-			return false;
-		} else {
-			return dir.deleteDirectory();
-		}
-	}
+    // Bundle operations
 
-	public static ArrayList<String> filesInDir( String name ){
-		FileHandle dir = getFileHandle( name );
-		ArrayList result = new ArrayList();
-		if (dir != null && dir.isDirectory()){
-			for (FileHandle file : dir.list()){
-				result.add(file.name());
-			}
-		}
-		return result;
-	}
-	
-	// bundle reading
-	
-	//only works for base path
-	public static Bundle bundleFromFile( String fileName ) throws IOException{
-		try {
-			FileHandle file = getFileHandle( fileName );
-			if (!file.exists() || file.isDirectory() || file.length() == 0) {
-				throw new IOException("file does not exist!");
-			}
-			return bundleFromStream(file.read());
-		} catch (GdxRuntimeException e){
-			//game classes expect an IO exception, so wrap the GDX exception in that
-			throw new IOException(e);
-		}
-	}
-	
-	private static Bundle bundleFromStream( InputStream input ) throws IOException{
-		Bundle bundle = Bundle.read( input );
-		input.close();
-		return bundle;
-	}
-	
-	// bundle writing
-	
-	//only works for base path
-	public static void bundleToFile( String fileName, Bundle bundle ) throws IOException{
-		try {
-			FileHandle file = getFileHandle(fileName);
+    public static Bundle bundleFromFile(String fileName) throws IOException {
+        log("Attempting to load bundle from file: " + fileName);
+        try {
+            FileHandle file = getFileHandle(fileName);
+            if (file == null) {
+                String error = "Could not get file handle for: " + fileName;
+                log(error);
+                throw new IOException(error);
+            }
+            
+            log("File handle obtained. Path: " + file.file().getAbsolutePath() + 
+                ", exists: " + file.exists() + 
+                ", isDirectory: " + file.isDirectory() + 
+                ", length: " + file.length() + " bytes");
+                
+            if (!file.exists() || file.isDirectory() || file.length() == 0) {
+                String error = "File does not exist or is invalid: " + fileName;
+                log(error);
+                throw new IOException(error);
+            }
+            
+            log("Reading bundle from file...");
+            Bundle bundle = bundleFromStream(file.read());
+            log("Successfully loaded bundle from file: " + fileName);
+            return bundle;
+            
+        } catch (GdxRuntimeException e) {
+            log("GdxRuntimeException while loading bundle: " + e.getMessage());
+            throw new IOException(e);
+        } catch (Exception e) {
+            log("Unexpected error loading bundle: " + e.getMessage());
+            throw e;
+        }
+    }
 
-			//write to a temp file, then move the files.
-			// This helps prevent save corruption if writing is interrupted
-			if (file.exists()){
-				FileHandle temp = getFileHandle(fileName + ".tmp");
-				bundleToStream(temp.write(false), bundle);
-				file.delete();
-				temp.moveTo(file);
-			} else {
-				bundleToStream(file.write(false), bundle);
-			}
+    private static Bundle bundleFromStream(InputStream input) throws IOException {
+        try {
+            Bundle bundle = Bundle.read(input);
+            input.close();
+            return bundle;
+        } catch (Exception e) {
+            try { input.close(); } catch (IOException ignored) {}
+            throw new IOException("Error reading bundle from stream", e);
+        }
+    }
 
-		} catch (GdxRuntimeException e){
-			//game classes expect an IO exception, so wrap the GDX exception in that
-			throw new IOException(e);
-		}
-	}
-	
-	private static void bundleToStream( OutputStream output, Bundle bundle ) throws IOException{
-		Bundle.write( bundle, output );
-		output.close();
-	}
+    public static boolean bundleToFile(String fileName, Bundle bundle) throws IOException {
+        log("Saving bundle to file: " + fileName);
+        try {
+            FileHandle file = getFileHandle(fileName);
+            if (file == null) {
+                String error = "Could not get file handle for: " + fileName;
+                log(error);
+                throw new IOException(error);
+            }
+            log("File handle obtained. Path: " + file.file().getAbsolutePath());
 
+            // Write to a temp file first to prevent corruption if the process is interrupted
+            FileHandle temp = getFileHandle(fileName + ".tmp");
+            if (temp != null) {
+                log("Writing to temp file: " + temp.file().getAbsolutePath());
+                bundleToStream(temp.write(false), bundle);
+                log("Successfully wrote to temp file");
+                
+                if (file.exists()) {
+                    log("Deleting existing file");
+                    boolean deleted = file.delete();
+                    log("Existing file " + (deleted ? "deleted" : "not deleted"));
+                }
+                
+                log("Moving temp file to final location");
+                temp.moveTo(file);
+                log("File saved successfully: " + file.file().getAbsolutePath() + 
+                    ", size: " + file.length() + " bytes");
+                return true;
+            } else {
+                String error = "Could not create temp file for: " + fileName;
+                log(error);
+                throw new IOException(error);
+            }
+        } catch (GdxRuntimeException e) {
+            log("GdxRuntimeException: " + e.getMessage());
+            throw new IOException(e);
+        } catch (Exception e) {
+            log("Unexpected error: " + e.getMessage());
+            throw e;
+        }
+    }
+
+    private static void bundleToStream(OutputStream output, Bundle bundle) throws IOException {
+        try {
+            Bundle.write(bundle, output);
+            output.close();
+        } catch (Exception e) {
+            try { output.close(); } catch (IOException ignored) {}
+            throw new IOException("Error writing bundle to stream", e);
+        }
+    }
+
+    // Temp file handling
+
+    public static boolean cleanTempFiles() {
+        return cleanTempFiles("");
+    }
+
+    public static boolean cleanTempFiles(String dirName) {
+        try {
+            FileHandle dir = getFileHandle(dirName);
+            if (dir == null || !dir.exists()) {
+                return false;
+            }
+
+            boolean foundTemp = false;
+            for (FileHandle file : dir.list()) {
+                if (file.isDirectory()) {
+                    foundTemp = cleanTempFiles(dirName + file.name()) || foundTemp;
+                } else if (file.length() == 0) {
+                    file.delete();
+                } else if (file.name().endsWith(".tmp")) {
+                    processTempFile(file);
+                    foundTemp = true;
+                }
+            }
+            return foundTemp;
+        } catch (Exception e) {
+            error("Error cleaning temp files in " + dirName, e);
+            return false;
+        }
+    }
+
+    private static void processTempFile(FileHandle temp) {
+        try {
+            FileHandle original = getFileHandle(defaultFileType, "", temp.path().replace(".tmp", ""));
+            if (original == null) {
+                temp.delete();
+                return;
+            }
+
+            // Verify temp file is valid
+            try (InputStream in = temp.read()) {
+                Bundle bundle = Bundle.read(in);
+                if (bundle == null) throw new IOException("Invalid bundle in temp file");
+            }
+
+            // If original exists, check which is newer
+            if (original.exists()) {
+                try (InputStream in = original.read()) {
+                    Bundle bundle = Bundle.read(in);
+                    if (bundle != null && temp.lastModified() <= original.lastModified()) {
+                        temp.delete();
+                        return;
+                    }
+                } catch (Exception e) {
+                    // Original is corrupted, will be replaced by temp
+                }
+            }
+
+            // Replace original with temp
+            temp.moveTo(original);
+
+        } catch (Exception e) {
+            temp.delete();
+        }
+    }
 }
