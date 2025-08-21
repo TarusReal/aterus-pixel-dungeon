@@ -32,6 +32,8 @@ public class InputHandler extends InputAdapter {
 
 	private InputMultiplexer multiplexer;
 
+	public static boolean devMode = true;
+
 	public InputHandler( Input input ){
 		//An input multiplexer, with additional coord tweaks for power saver mode
 		multiplexer = new InputMultiplexer(){
@@ -166,6 +168,37 @@ public class InputHandler extends InputAdapter {
 	
 	@Override
 	public synchronized boolean keyDown( int keyCode ) {
+		// Devmode: Ebene auf/absteigen mit F7/F8
+		if (devMode) {
+			if (keyCode == Input.Keys.NUM_9) {
+				try {
+					Class<?> dungeonClass = Class.forName("com.shatteredpixel.shatteredpixeldungeon.Dungeon");
+					java.lang.reflect.Field depthField = dungeonClass.getField("depth");
+					int depth = depthField.getInt(null);
+					if (depth > 1) {
+						depthField.setInt(null, depth - 1);
+						java.lang.reflect.Method switchLevel = dungeonClass.getMethod("switchLevel", int.class);
+						switchLevel.invoke(null, depth - 1);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return true;
+			}
+			if (keyCode == Input.Keys.NUM_0) {
+				try {
+					Class<?> dungeonClass = Class.forName("com.shatteredpixel.shatteredpixeldungeon.Dungeon");
+					java.lang.reflect.Field depthField = dungeonClass.getField("depth");
+					int depth = depthField.getInt(null);
+					depthField.setInt(null, depth + 1);
+					java.lang.reflect.Method switchLevel = dungeonClass.getMethod("switchLevel", int.class);
+					switchLevel.invoke(null, depth + 1);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return true;
+			}
+		}
 		if (KeyBindings.isKeyBound( keyCode )) {
 			KeyEvent.addKeyEvent( new KeyEvent( keyCode, true ) );
 			return true;
