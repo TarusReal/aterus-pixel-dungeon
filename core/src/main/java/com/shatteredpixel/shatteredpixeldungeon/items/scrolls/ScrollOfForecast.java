@@ -1,3 +1,4 @@
+@ -1,309 +1,317 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.scrolls;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -7,8 +8,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+=======
+>>>>>>> parent of c6fc9221b (Merge remote-tracking branch 'origin/master')
 =======
 >>>>>>> parent of c6fc9221b (Merge remote-tracking branch 'origin/master')
 =======
@@ -48,6 +52,7 @@ public class ScrollOfForecast extends Scroll {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
         // Save hero state
         Dungeon.hero.storeInBundle(bundle);
@@ -68,6 +73,10 @@ public class ScrollOfForecast extends Scroll {
         }
         bundle.put("hunger", hungerLvl);
 
+=======
+        Dungeon.hero.storeInBundle(bundle);
+
+>>>>>>> parent of c6fc9221b (Merge remote-tracking branch 'origin/master')
 =======
         Dungeon.hero.storeInBundle(bundle);
 
