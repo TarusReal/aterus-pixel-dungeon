@@ -32,21 +32,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
-import com.shatteredpixel.shatteredpixeldungeon.items.JarOfVoid;
 import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ScaleArmor;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.*;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
-import com.watabou.utils.Random;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
-import java.util.HashMap;
-import java.util.Map;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
@@ -75,53 +65,7 @@ import java.util.HashMap;
 
 public class ShopRoom extends SpecialRoom {
 
-	private static boolean jarOfVoidSpawned = false;
-
 	protected ArrayList<Item> itemsToSpawn;
-	private static Bag chooseBag(Belongings b) {
-		ArrayList<Bag> bags = new ArrayList<>();
-		// Check if the player already has each type of bag
-		boolean hasVelvetPouch = false;
-		boolean hasScrollHolder = false;
-		boolean hasPotionBandolier = false;
-		boolean hasMagicalHolster = false;
-		
-		for (Item item : b.backpack.items) {
-			if (item instanceof VelvetPouch) hasVelvetPouch = true;
-			else if (item instanceof ScrollHolder) hasScrollHolder = true;
-			else if (item instanceof PotionBandolier) hasPotionBandolier = true;
-			else if (item instanceof MagicalHolster) hasMagicalHolster = true;
-		}
-		
-		if (!hasVelvetPouch) {
-			bags.add(new VelvetPouch());
-		}
-		if (!hasScrollHolder) {
-			bags.add(new ScrollHolder());
-		}
-		if (!hasPotionBandolier) {
-			bags.add(new PotionBandolier());
-		}
-		if (!hasMagicalHolster) {
-			bags.add(new MagicalHolster());
-		}
-
-		if (bags.isEmpty()) {
-			return null;
-		} else {
-			Bag bag = Random.element(bags);
-			if (bag instanceof VelvetPouch) {
-				Dungeon.LimitedDrops.VELVET_POUCH.drop();
-			} else if (bag instanceof ScrollHolder) {
-				Dungeon.LimitedDrops.SCROLL_HOLDER.drop();
-			} else if (bag instanceof PotionBandolier) {
-				Dungeon.LimitedDrops.POTION_BANDOLIER.drop();
-			} else if (bag instanceof MagicalHolster) {
-				Dungeon.LimitedDrops.MAGICAL_HOLSTER.drop();
-			}
-			return bag;
-		}
-	}
 	
 	@Override
 	public int minWidth() {
@@ -136,10 +80,9 @@ public class ShopRoom extends SpecialRoom {
 	public int spacesNeeded(){
 		if (itemsToSpawn == null) itemsToSpawn = generateItems();
 
-			//sandbags spawn based on current level of an hourglass the player may be holding
+		//sandbags spawn based on current level of an hourglass the player may be holding
 		// so, to avoid rare cases of min sizes differing based on that, we ignore all sandbags
 		// and then add 4 items in all cases, which is max number of sandbags that can be in the shop
-
 		int spacesNeeded = itemsToSpawn.size();
 		for (Item i : itemsToSpawn){
 			if (i instanceof TimekeepersHourglass.sandBag){
@@ -318,8 +261,7 @@ public class ShopRoom extends SpecialRoom {
 
 		itemsToSpawn.add( new Alchemize().quantity(Random.IntRange(2, 3)));
 
-		// Try to add a bag if the hero doesn't have all types already
-		Bag bag = chooseBag(Dungeon.hero.belongings);
+		Bag bag = ChooseBag(Dungeon.hero.belongings);
 		if (bag != null) {
 			itemsToSpawn.add(bag);
 		}
@@ -359,61 +301,59 @@ public class ShopRoom extends SpecialRoom {
 
 		TimekeepersHourglass hourglass = Dungeon.hero.belongings.getItem(TimekeepersHourglass.class);
 		if (hourglass != null && hourglass.isIdentified() && !hourglass.cursed){
-				int sandBags = 0;
+			int bags = 0;
 			//creates the given float percent of the remaining bags to be dropped.
 			//this way players who get the hourglass late can still max it, usually.
 			switch (Dungeon.depth) {
 				case 6:
-						sandBags = (int)Math.ceil(( 5-hourglass.sandBags) * 0.20f ); break;
+					bags = (int)Math.ceil(( 5-hourglass.sandBags) * 0.20f ); break;
 				case 11:
-						sandBags = (int)Math.ceil(( 5-hourglass.sandBags) * 0.25f ); break;
+					bags = (int)Math.ceil(( 5-hourglass.sandBags) * 0.25f ); break;
 				case 16:
-						sandBags = (int)Math.ceil(( 5-hourglass.sandBags) * 0.50f ); break;
+					bags = (int)Math.ceil(( 5-hourglass.sandBags) * 0.50f ); break;
 				case 20: case 21:
-						sandBags = (int)Math.ceil(( 5-hourglass.sandBags) * 0.80f ); break;
+					bags = (int)Math.ceil(( 5-hourglass.sandBags) * 0.80f ); break;
 			}
 
-			for(int i = 1; i <= sandBags; i++){
+			for(int i = 1; i <= bags; i++){
 				itemsToSpawn.add( new TimekeepersHourglass.sandBag());
 				hourglass.sandBags ++;
 			}
 		}
-		boolean jarOfVoidSpawned = false;
-		Item random;
-		switch (Random.Int(13)){  
+
+		Item rare;
+		switch (Random.Int(10)){
 			case 0:
-				random = Generator.random( Generator.Category.WAND );
-				random.level( 0 );
+				rare = Generator.random( Generator.Category.WAND );
+				rare.level( 0 );
 				break;
 			case 1:
-				random = Generator.random(Generator.Category.RING);
-				random.level( 0 );
+				rare = Generator.random(Generator.Category.RING);
+				rare.level( 0 );
 				break;
 			case 2:
-			case 3:  
-			case 4:
-				random = Generator.random( Generator.Category.ARTIFACT );
+				rare = Generator.random( Generator.Category.ARTIFACT );
 				break;
 			default:
-				random = new Stylus();
+				rare = new Stylus();
 		}
-		random.cursed = false;
-		random.cursedKnown = true;
-		itemsToSpawn.add( random );
+		rare.cursed = false;
+		rare.cursedKnown = true;
+		itemsToSpawn.add( rare );
 
-		// Add Jar of Void with 5% chance if not already spawned and on lower levels (depth < 15)
-		if (!jarOfVoidSpawned && Dungeon.depth < 15 && Random.Float() < 0.05f) {
-			JarOfVoid jar = new JarOfVoid() {
-				@Override
-				public int value() {
-					return 1000; // Set high price comparable to Ankh
-				}
-			};
-			itemsToSpawn.add(jar);
-			jarOfVoidSpawned = true;
-		}
+		//use a new generator here to prevent items in shop stock affecting levelgen RNG (e.g. sandbags)
+		//we can use a random long for the seed as it will be the same long every time
+		Random.pushGenerator(Random.Long());
+			Random.shuffle(itemsToSpawn);
+		Random.popGenerator();
 
-		Map<Bag, Integer> bags = new HashMap<>();
+		return itemsToSpawn;
+	}
+
+	protected static Bag ChooseBag(Belongings pack){
+
+		//generate a hashmap of all valid bags.
+		HashMap<Bag, Integer> bags = new HashMap<>();
 		if (!Dungeon.LimitedDrops.VELVET_POUCH.dropped()) bags.put(new VelvetPouch(), 1);
 		if (!Dungeon.LimitedDrops.SCROLL_HOLDER.dropped()) bags.put(new ScrollHolder(), 0);
 		if (!Dungeon.LimitedDrops.POTION_BANDOLIER.dropped()) bags.put(new PotionBandolier(), 0);
@@ -422,21 +362,21 @@ public class ShopRoom extends SpecialRoom {
 		if (bags.isEmpty()) return null;
 
 		//count up items in the main bag
-		for (Item item : Dungeon.hero.belongings.backpack.items) {
-			for (Bag currentBag : bags.keySet()){
-				if (currentBag.canHold(item)){
-					bags.put(currentBag, bags.get(currentBag)+1);
+		for (Item item : pack.backpack.items) {
+			for (Bag bag : bags.keySet()){
+				if (bag.canHold(item)){
+					bags.put(bag, bags.get(bag)+1);
 				}
 			}
 		}
 
 		//find which bag will result in most inventory savings, drop that.
 		Bag bestBag = null;
-		for (Bag innerBag : bags.keySet()){
+		for (Bag bag : bags.keySet()){
 			if (bestBag == null){
-				bestBag = innerBag;
-			} else if (bags.get(innerBag) > bags.get(bestBag)){
-				bestBag = innerBag;
+				bestBag = bag;
+			} else if (bags.get(bag) > bags.get(bestBag)){
+				bestBag = bag;
 			}
 		}
 
@@ -449,7 +389,9 @@ public class ShopRoom extends SpecialRoom {
 		} else if (bestBag instanceof MagicalHolster){
 			Dungeon.LimitedDrops.MAGICAL_HOLSTER.drop();
 		}
-		return itemsToSpawn;
+
+		return bestBag;
+
 	}
 
 }

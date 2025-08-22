@@ -1,20 +1,21 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.scrolls;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.watabou.noosa.Game;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+<<<<<<< HEAD
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+=======
+>>>>>>> parent of c6fc9221b (Merge remote-tracking branch 'origin/master')
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
-import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 
 public class ScrollOfForecast extends Scroll {
 
@@ -32,8 +33,9 @@ public class ScrollOfForecast extends Scroll {
 
     @Override
     public void doRead() {
-        // Save the entire game state
+        // Save the hero's current state
         Bundle bundle = new Bundle();
+<<<<<<< HEAD
 
         // Save hero state
         Dungeon.hero.storeInBundle(bundle);
@@ -54,6 +56,10 @@ public class ScrollOfForecast extends Scroll {
         }
         bundle.put("hunger", hungerLvl);
 
+=======
+        Dungeon.hero.storeInBundle(bundle);
+
+>>>>>>> parent of c6fc9221b (Merge remote-tracking branch 'origin/master')
         // Apply the rewind buff
         RewindBuff rewind = Buff.affect(Dungeon.hero, RewindBuff.class);
         rewind.setRewindData(bundle);
@@ -84,6 +90,7 @@ public class ScrollOfForecast extends Scroll {
 
             if (turnsLeft <= 0) {
                 // Time to rewind!
+<<<<<<< HEAD
                 if (rewindData != null && Dungeon.hero != null) {
                     try {
                         // Clear existing buffs to prevent duplication
@@ -232,6 +239,11 @@ public class ScrollOfForecast extends Scroll {
                         // Try to at least keep the game running
                         Dungeon.hero.sprite.operate(Dungeon.hero.pos);
                     }
+=======
+                if (rewindData != null) {
+                    Dungeon.hero.restoreFromBundle(rewindData);
+                    GLog.w(Messages.get(this, "rewind"));
+>>>>>>> parent of c6fc9221b (Merge remote-tracking branch 'origin/master')
                 }
                 detach();
             } else {

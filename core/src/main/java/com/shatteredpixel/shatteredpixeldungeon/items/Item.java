@@ -81,7 +81,7 @@ public class Item implements Bundlable {
 	protected int quantity = 1;
 	public boolean dropsDownHeap = false;
 	
-	public int level = 0;
+	private int level = 0;
 
 	public boolean levelKnown = false;
 	
@@ -561,7 +561,7 @@ public class Item implements Bundlable {
 	}
 	
 	private static final String QUANTITY		= "quantity";
-	public static final String LEVEL			= "level";
+	private static final String LEVEL			= "level";
 	private static final String LEVEL_KNOWN		= "levelKnown";
 	private static final String CURSED			= "cursed";
 	private static final String CURSED_KNOWN	= "cursedKnown";

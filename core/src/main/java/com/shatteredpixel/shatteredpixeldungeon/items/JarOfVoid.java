@@ -15,7 +15,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
@@ -53,8 +52,6 @@ public class JarOfVoid extends Item {
         }
     }
     public void activate(int cell) {
-        boolean enemiesKilled = false;
-        
         Sample.INSTANCE.play(Assets.Sounds.BURNING);
         Sample.INSTANCE.play(Assets.Sounds.BLAST);
         Sample.INSTANCE.play(Assets.Sounds.PUFF);
@@ -74,60 +71,38 @@ public class JarOfVoid extends Item {
 
         // Store a reference to the hero
         Hero hero = Dungeon.hero;
-        
-        // Temporarily suppress death messages by setting HP to 0
-        boolean oldValue = Dungeon.hero.isAlive();
-        int oldHP = Dungeon.hero.HP;
-        Dungeon.hero.HP = 0;
 
-        try {
-            // Suck in all non-boss enemies
-            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                if (mob.alignment == Char.Alignment.ENEMY && !mob.properties().contains(Char.Property.BOSS)) {
-                    // Calculate distance for damage
-                    int dist = Dungeon.level.distance(cell, mob.pos);
+        // Suck in all non-boss enemies
+        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+            if (mob.alignment == Char.Alignment.ENEMY && !mob.properties().contains(Char.Property.BOSS)) {
+                // Calculate distance for damage
+                int dist = Dungeon.level.distance(cell, mob.pos);
 
-                    // Deal significant damage in one go (100% of max HP)
-                    int damage = (int)(mob.HT);
-                    if (damage < 5) damage = 5; // Minimum damage
+                // Deal significant damage in one go (75% of max HP)
+                int damage = (int)(mob.HT);
+                if (damage < 5) damage = 5; // Minimum damage
 
-                    // Move mob towards the vortex
-                    int newPos = mob.pos;
-                    for (int i : PathFinder.NEIGHBOURS8) {
-                        if (Dungeon.level.distance(cell, mob.pos + i) < dist) {
-                            newPos = mob.pos + i;
-                            break;
-                        }
+                // Move mob towards the vortex
+                int newPos = mob.pos;
+                for (int i : PathFinder.NEIGHBOURS8) {
+                    if (Dungeon.level.distance(cell, mob.pos + i) < dist) {
+                        newPos = mob.pos + i;
+                        break;
                     }
-
-                    if (newPos != mob.pos && Dungeon.level.passable[newPos] && Actor.findChar(newPos) == null) {
-                        mob.sprite.move(mob.pos, newPos);
-                        mob.move(newPos);
-                    }
-
-                    // Prevent XP gain and apply damage/vertigo
-                    Buff.affect(mob, NoXPBuff.class, 1f);
-                    mob.damage(damage, this);
-                    if (!mob.isAlive()) {
-                        enemiesKilled = true;
-                    }
-                    Buff.affect(mob, Vertigo.class, 3f);
                 }
-            }
-        } finally {
-            // Restore hero's alive state
-            // Restore hero's HP to restore alive state
-            if (oldValue) {
-                Dungeon.hero.HP = oldHP > 0 ? oldHP : 1;
-            } else {
-                Dungeon.hero.HP = 0;
+
+                if (newPos != mob.pos && Dungeon.level.passable[newPos] && Actor.findChar(newPos) == null) {
+                    mob.sprite.move(mob.pos, newPos);
+                    mob.move(newPos);
+                }
+
+                // Prevent XP gain and apply damage/vertigo
+                Buff.affect(mob, NoXPBuff.class, 1f);
+                mob.damage(damage, this);
+                Buff.affect(mob, Vertigo.class, 3f);
             }
         }
 
-        // Show death message only once if any enemies were killed
-        if (enemiesKilled) {
-            GLog.n(Messages.get(this, "enemies_sucked"));
-        }
         // Damage the player if too close
         int heroDist = Dungeon.level.distance(cell, hero.pos);
         if (heroDist <= 2) {
