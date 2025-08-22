@@ -71,7 +71,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.*;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfForesight;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfForecast;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.BookOfNecromancy;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SaltCube;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
@@ -149,7 +148,6 @@ public enum HeroClass {
 			new ScrollOfRecharging().collect();
 			new ScrollOfTeleportation().collect();
 			new ScrollOfTerror().collect();
-			new ScrollOfForecast().collect();
 			new ScrollHolder().collect();
 			new ScrollOfChallenge().collect();
 			new PotionBandolier().collect();
