@@ -299,7 +299,25 @@ public class ItemSpriteSheet {
 		assignItemRect(GAUNTLETS,   13, 15);
 		assignItemRect(WAR_SCYTHE,  14, 15);
 	}
+	private static final int WEP_TIER6      =                               xy(8, 9);   //8 slots
+	public static final int WOOD_SWORD1     = WEP_TIER5+0;
+	public static final int WOOD_SWORD2     = WEP_TIER5+1;
+	public static final int WOOD_SWORD3     = WEP_TIER5+2;
+	public static final int HALBERD         = WEP_TIER5+3;
+	public static final int WATER_TRIDENT   = WEP_TIER5+4;
+	public static final int FIRE_GAUNTLET   = WEP_TIER5+5;
+	public static final int EJIDNH    		= WEP_TIER5+6;
+	public static final int GOLD_SWORD      = WEP_TIER5+7;
 
+	static{
+		assignItemRect(GREATSWORD,  16, 16);
+		assignItemRect(WAR_HAMMER,  16, 16);
+		assignItemRect(GLAIVE,      16, 16);
+		assignItemRect(GREATAXE,    12, 16);
+		assignItemRect(GREATSHIELD, 12, 16);
+		assignItemRect(GAUNTLETS,   13, 15);
+		assignItemRect(WAR_SCYTHE,  14, 15);
+	}
 	                                                                                    //8 free slots
 
 	private static final int MISSILE_WEP    =                               xy(1, 10);  //16 slots. 3 per tier + bow
@@ -588,6 +606,8 @@ public class ItemSpriteSheet {
 	public static final int STONE_FLOCK         = STONES+9;
 	public static final int STONE_INTUITION     = STONES+10;
 	public static final int STONE_SHOCK         = STONES+11;
+	public static final int STONE_STRENGTH      = STONES+12;
+	public static final int STONE_RANDOM     = STONES+13;
 	static {
 		for (int i = STONES; i < STONES+16; i++)
 			assignItemRect(i, 14, 12);

@@ -20,7 +20,7 @@ public class BookOfNecromancy extends Trinket {
 	private static ItemSprite.Glowing BLACK = new ItemSprite.Glowing( 0x440066 );
 	@Override
 	protected int upgradeEnergyCost() {
-		return 7 + 2 * level();
+		return 6 + 2 * level();
 	}
 
 	@Override
