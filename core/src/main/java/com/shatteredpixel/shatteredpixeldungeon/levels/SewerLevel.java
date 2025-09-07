@@ -50,6 +50,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.SurfaceScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.audio.Music;
@@ -144,17 +145,34 @@ public class SewerLevel extends RegularLevel {
 	
 	@Override
 	public boolean activateTransition(Hero hero, LevelTransition transition) {
+		return activateTransition(hero, transition, false);
+	}
+
+	public boolean activateTransition(Hero hero, LevelTransition transition, boolean force) {
 		if (transition.type == LevelTransition.Type.SURFACE){
-			//todo ATREBAS reset
-			if (false/*hero.belongings.getItem( Amulet.class ) == null*/) {
+			if (!force && hero.belongings.getItem( Amulet.class ) == null) {
 				Game.runOnRenderThread(new Callback() {
 					@Override
 					public void call() {
-						GameScene.show( new WndMessage( Messages.get(hero, "leave") ) );
+						GameScene.show(new WndOptions(
+							Messages.get(hero, "leave_title"),
+							Messages.get(hero, "leave"),
+							Messages.get(hero, "ok"),
+							Messages.get(hero, "leave_anyway")) {
+							@Override
+							protected void onSelect(int index) {
+								if (index == 1) { // "Doch" gedrückt
+									activateTransition(hero, transition, true);
+								}
+								// Sonst einfach schließen
+							}
+						});
 					}
 				});
 				return false;
 			} else {
+				if (!force)
+				{
 				Statistics.ascended = true;
 				Game.switchScene(SurfaceScene.class, new Game.SceneChangeCallback() {
 					@Override
@@ -171,6 +189,14 @@ public class SewerLevel extends RegularLevel {
 					}
 				});
 				return true;
+				}
+				else
+				{
+					Statistics.ascended = false;
+					//forced transition, don't do all the winning stuff
+					Game.switchScene(SurfaceScene.class);
+					return true;
+				}
 			}
 		} else {
 			return super.activateTransition(hero, transition);

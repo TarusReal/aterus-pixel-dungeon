@@ -75,6 +75,8 @@ public class BookOfNecromancy extends Trinket {
 				&& randomf <= allyReviveChance()+enemyReviveChance()
 				&& !defender.isImmune(Corruption.class)
 				&& defender.buff(Corruption.class) == null
+				&& !defender.isImmune(Undead.class)
+				&& defender.buff(Undead.class) == null
 				&& defender instanceof Mob
 				&& defender.isAlive()){
 

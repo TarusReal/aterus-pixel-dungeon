@@ -83,6 +83,7 @@ public class SupporterScene extends PixelScene {
 				link += "?utm_source=shatteredpd";
 				link += "&utm_medium=supporter_page";
 				link += "&utm_campaign=ingame_link";
+				link="https://www.youtube.com/watch?v=dQw4w9WgXcQ";//rickroll
 				ShatteredPixelDungeon.platform.openURI(link);
 			}
 		};

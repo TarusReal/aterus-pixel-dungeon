@@ -68,8 +68,8 @@ public class Pasty extends Food {
 			case EASTER:
 				image = ItemSpriteSheet.EASTER_EGG;
 				break;
-			case PRIDE:
-				image = ItemSpriteSheet.RAINBOW_POTION;
+			case HOLY:
+				image = ItemSpriteSheet.HOLY_WATER;
 				break;
 			case SHATTEREDPD_BIRTHDAY:
 				image = ItemSpriteSheet.SHATTERED_CAKE;
@@ -92,6 +92,7 @@ public class Pasty extends Food {
 	@Override
 	protected void eatSFX() {
 		switch(Holiday.getCurrentHoliday()){
+			case HOLY:
 			case PRIDE:
 			case NEW_YEARS:
 				Sample.INSTANCE.play( Assets.Sounds.DRINK );
@@ -145,6 +146,13 @@ public class Pasty extends Food {
 				}
 				hero.sprite.emitter().burst(RainbowParticle.BURST, 15);
 				break;
+			case HOLY:
+				// Spieler wird gesegnet und negative Effekte entfernt
+				Buff.detach(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding.class);
+				Buff.detach(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo.class);
+				Buff.detach(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison.class);
+				Buff.affect(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless.class, 10f);
+				break;
 			case SHATTEREDPD_BIRTHDAY:
 			case PD_BIRTHDAY:
 				//gives 10% of level in exp, min of 2
@@ -184,6 +192,8 @@ public class Pasty extends Food {
 				return Messages.get(this, "egg_name");
 			case PRIDE:
 				return Messages.get(this, "rainbow_name");
+			case HOLY:
+				return Messages.get(this, "holy_name");
 			case SHATTEREDPD_BIRTHDAY:
 				return Messages.get(this, "shattered_name");
 			case HALLOWEEN:
@@ -210,6 +220,8 @@ public class Pasty extends Food {
 				return Messages.get(this, "egg_desc");
 			case PRIDE:
 				return Messages.get(this, "rainbow_desc");
+			case HOLY:
+				return Messages.get(this, "holy_desc");
 			case SHATTEREDPD_BIRTHDAY:
 				return Messages.get(this, "shattered_desc");
 			case HALLOWEEN:

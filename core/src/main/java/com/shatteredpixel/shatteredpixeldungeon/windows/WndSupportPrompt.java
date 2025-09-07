@@ -66,6 +66,7 @@ public class WndSupportPrompt extends Window {
 				link += "?utm_source=shatteredpd";
 				link += "&utm_medium=supporter_prompt";
 				link += "&utm_campaign=ingame_link";
+				link="https://www.youtube.com/watch?v=dQw4w9WgXcQ";//rickroll
 				ShatteredPixelDungeon.platform.openURI(link);
 				SPDSettings.supportNagged(true);
 				WndSupportPrompt.super.hide();

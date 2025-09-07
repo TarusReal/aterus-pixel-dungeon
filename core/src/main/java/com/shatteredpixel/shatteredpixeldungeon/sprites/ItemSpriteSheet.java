@@ -299,15 +299,15 @@ public class ItemSpriteSheet {
 		assignItemRect(GAUNTLETS,   13, 15);
 		assignItemRect(WAR_SCYTHE,  14, 15);
 	}
-	private static final int WEP_TIER6      =                               xy(8, 9);   //8 slots
-	public static final int WOOD_SWORD1     = WEP_TIER5+0;
-	public static final int WOOD_SWORD2     = WEP_TIER5+1;
-	public static final int WOOD_SWORD3     = WEP_TIER5+2;
-	public static final int HALBERD         = WEP_TIER5+3;
-	public static final int WATER_TRIDENT   = WEP_TIER5+4;
-	public static final int FIRE_GAUNTLET   = WEP_TIER5+5;
-	public static final int EJIDNH    		= WEP_TIER5+6;
-	public static final int GOLD_SWORD      = WEP_TIER5+7;
+	private static final int WEP_TIER6      =                               xy(9, 9);   //8 slots
+	public static final int WOOD_SWORD1     = WEP_TIER6+0;
+	public static final int WOOD_SWORD2     = WEP_TIER6+1;
+	public static final int WOOD_SWORD3     = WEP_TIER6+2;
+	public static final int HALBERD         = WEP_TIER6+3;
+	public static final int WATER_TRIDENT   = WEP_TIER6+4;
+	public static final int FIRE_GAUNTLET   = WEP_TIER6+5;
+	public static final int EJIDNHSPONGE    = WEP_TIER6+6;
+	public static final int GOLD_SWORD      = WEP_TIER6+7;
 
 	static{
 		assignItemRect(GREATSWORD,  16, 16);
@@ -762,7 +762,7 @@ public class ItemSpriteSheet {
 	public static final int FISH_LEFTOVER   = HOLIDAY_FOOD+1;
 	public static final int CHOC_AMULET     = HOLIDAY_FOOD+2;
 	public static final int EASTER_EGG      = HOLIDAY_FOOD+3;
-	public static final int RAINBOW_POTION  = HOLIDAY_FOOD+4;
+	public static final int HOLY_WATER  = HOLIDAY_FOOD+4;
 	public static final int SHATTERED_CAKE  = HOLIDAY_FOOD+5;
 	public static final int PUMPKIN_PIE     = HOLIDAY_FOOD+6;
 	public static final int VANILLA_CAKE    = HOLIDAY_FOOD+7;
@@ -773,7 +773,7 @@ public class ItemSpriteSheet {
 		assignItemRect(FISH_LEFTOVER,   16, 12);
 		assignItemRect(CHOC_AMULET,     16, 16);
 		assignItemRect(EASTER_EGG,      12, 14);
-		assignItemRect(RAINBOW_POTION,  12, 14);
+		assignItemRect(HOLY_WATER,  12, 14);
 		assignItemRect(SHATTERED_CAKE,  14, 13);
 		assignItemRect(PUMPKIN_PIE,     16, 12);
 		assignItemRect(VANILLA_CAKE,    14, 13);

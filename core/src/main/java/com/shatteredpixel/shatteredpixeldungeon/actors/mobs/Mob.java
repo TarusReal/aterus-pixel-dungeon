@@ -974,8 +974,10 @@ public abstract class Mob extends Char {
 				RingOfWealth.showFlareForBonusDrop(sprite);
 			}
 		}
-		if(Dungeon.hero.belongings.getItem(GoldSword.class) != null){
-			Dungeon.hero.belongings.getItem(GoldSword.class).tryGoldSpawn(pos);
+		// GoldSword-Logik: Nur wenn ausgerüstet und Stärke ausreichend
+		if (Dungeon.hero.belongings.weapon() instanceof GoldSword) {
+			GoldSword goldSword = (GoldSword) Dungeon.hero.belongings.weapon();
+				goldSword.tryGoldSpawn(pos);
 		}
 		
 		//lucky enchant logic

@@ -32,7 +32,8 @@ public enum Holiday {
 	APRIL_FOOLS,            //April 1st, can override easter                        (1 day)
 	EASTER,                 //Varies, sometime in Late Mar to Late Apr              (6-7 days)
 	//Nothing in May
-	PRIDE,                  //Jun 24th to Jun 30th                                  (7 days)
+	HOLY, //Jun 24th to Jun 30th                                  (7 days)
+	PRIDE,
 	//Nothing in Jul
 	SHATTEREDPD_BIRTHDAY,   //Aug 1st to Aug 7th                                    (7 days)
 	//Nothing in Sept
@@ -80,10 +81,10 @@ public enum Holiday {
 			return EASTER;
 		}
 
-		//Pride
+		//not Pride anymore but Holy
 		if (cal.get(Calendar.MONTH) == Calendar.JUNE
 				&& cal.get(Calendar.DAY_OF_MONTH) >= 24){
-			return PRIDE;
+			return HOLY;
 		}
 
 		//Shattered's Birthday
