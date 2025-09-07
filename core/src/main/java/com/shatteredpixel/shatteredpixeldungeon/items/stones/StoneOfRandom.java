@@ -1,43 +1,29 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.stones;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 import java.util.*;
 
-public class StoneOfRandom extends Runestone {
+public class StoneOfRandom extends InventoryStone {
     private int uses = 2;
 
-    // Map von Runenstein-Klassen zu Wahrscheinlichkeiten (Summe = 1.0)
-    private static final LinkedHashMap<Class<? extends Runestone>, Float> RUNESTONE_PROBABILITIES = new LinkedHashMap<>();
+    // Eine Wahrscheinlichkeits-Liste für alle Steine
+    private static final LinkedHashMap<Class<? extends Runestone>, Float> STONE_PROBABILITIES = new LinkedHashMap<>();
     static {
-        RUNESTONE_PROBABILITIES.put(StoneOfAggression.class, 0.125f);
-        RUNESTONE_PROBABILITIES.put(StoneOfBlast.class, 0.125f);
-        RUNESTONE_PROBABILITIES.put(StoneOfBlink.class, 0.125f);
-        RUNESTONE_PROBABILITIES.put(StoneOfClairvoyance.class, 0.125f);
-        RUNESTONE_PROBABILITIES.put(StoneOfDeepSleep.class, 0.125f);
-        //RUNESTONE_PROBABILITIES.put(StoneOfDisarming.class, 0.125f);
-        RUNESTONE_PROBABILITIES.put(StoneOfFear.class, 0.125f);
-        RUNESTONE_PROBABILITIES.put(StoneOfFlock.class, 0.125f);
-        RUNESTONE_PROBABILITIES.put(StoneOfShock.class, 0.125f);
-        // Summe = 1.125, ggf. anpassen, falls du andere Wahrscheinlichkeiten willst
-    }
-
-    // Zwei Wahrscheinlichkeits-Listen für Inventar- und Wurfsteine
-    private static final LinkedHashMap<Class<? extends Runestone>, Float> INVENTORY_STONE_PROBABILITIES = new LinkedHashMap<>();
-    private static final LinkedHashMap<Class<? extends Runestone>, Float> THROWABLE_STONE_PROBABILITIES = new LinkedHashMap<>();
-    static {
-        // Beispielhafte Verteilung, anpassbar
-        INVENTORY_STONE_PROBABILITIES.put(StoneOfClairvoyance.class, 0.25f);
-        INVENTORY_STONE_PROBABILITIES.put(StoneOfDeepSleep.class, 0.25f);
-        INVENTORY_STONE_PROBABILITIES.put(StoneOfFear.class, 0.25f);
-        INVENTORY_STONE_PROBABILITIES.put(StoneOfFlock.class, 0.25f);
-        THROWABLE_STONE_PROBABILITIES.put(StoneOfAggression.class, 0.25f);
-        THROWABLE_STONE_PROBABILITIES.put(StoneOfBlast.class, 0.25f);
-        THROWABLE_STONE_PROBABILITIES.put(StoneOfBlink.class, 0.25f);
-        THROWABLE_STONE_PROBABILITIES.put(StoneOfShock.class, 0.25f);
+        STONE_PROBABILITIES.put(StoneOfAggression.class, 0.125f);
+        STONE_PROBABILITIES.put(StoneOfBlast.class, 0.125f);
+        STONE_PROBABILITIES.put(StoneOfBlink.class, 0.125f);
+        STONE_PROBABILITIES.put(StoneOfFear.class, 0.125f);
+        STONE_PROBABILITIES.put(StoneOfClairvoyance.class, 0.125f);
+        STONE_PROBABILITIES.put(StoneOfDeepSleep.class, 0.125f);
+        STONE_PROBABILITIES.put(StoneOfFlock.class, 0.125f);
+        STONE_PROBABILITIES.put(StoneOfShock.class, 0.125f);
+        STONE_PROBABILITIES.put(StoneOfDetectMagic.class, 0.0625f);
+        STONE_PROBABILITIES.put(StoneOfIntuition.class, 0.0625f);
+        STONE_PROBABILITIES.put(StoneOfEnchantment.class, 0.0625f);
     }
 
     public StoneOfRandom() {
@@ -45,37 +31,41 @@ public class StoneOfRandom extends Runestone {
          image =  ItemSpriteSheet.STONE_RANDOM;
     }
 
-    @Override
-    protected void activate(int cell) {
+
+    protected void doUse(int cell) {
         if (uses <= 0) return;
         uses--;
         Class<? extends Runestone> chosen = chooseRunestone();
         if (chosen != null) {
             try {
                 Runestone stone = chosen.getDeclaredConstructor().newInstance();
-                stone.anonymize(); // damit keine doppelten Drops etc.
+                stone.anonymize();
                 stone.activate(cell);
             } catch (Exception e) {
                 // Fehlerbehandlung
             }
         }
         if (uses == 0) {
-            curItem.detach(curUser.belongings.backpack);
+            detach(Dungeon.hero.belongings.backpack);
         }
+    }
+
+    @Override
+    protected void activate(int cell) {
+        doUse(cell);
+    }
+
+    @Override
+    protected void onItemSelected(Item item) {
+
     }
 
     private Class<? extends Runestone> chooseRunestone() {
         Random random = new Random();
-        LinkedHashMap<Class<? extends Runestone>, Float> map;
-        if (uses == 1) {
-            map = INVENTORY_STONE_PROBABILITIES;
-        } else {
-            map = THROWABLE_STONE_PROBABILITIES;
-        }
-        if (!map.isEmpty()) {
+        if (!STONE_PROBABILITIES.isEmpty()) {
             float rand = random.nextFloat();
             float cumulative = 0f;
-            for (Map.Entry<Class<? extends Runestone>, Float> entry : map.entrySet()) {
+            for (Map.Entry<Class<? extends Runestone>, Float> entry : STONE_PROBABILITIES.entrySet()) {
                 cumulative += entry.getValue();
                 if (rand < cumulative) return entry.getKey();
             }
