@@ -70,6 +70,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.*;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPrismaticImage;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfDisarming;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfRandom;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.BookOfNecromancy;
@@ -154,10 +155,12 @@ public enum HeroClass {
 			for (int j = 0; j < 10; j++) {
 				new StoneOfRandom().collect();
 				new PotionOfStrength().collect();
+				new ScrollOfUpgrade().collect();
 			}
 			new Halberd().collect();
 			new WandOfSheep().collect();
-			//new AlchemistsToolkit().collect();
+			new ScrollOfPrismaticImage().collect();
+			new AlchemistsToolkit().collect();
 			//new ScrollOfWisdom().collect();
 			//new ScrollOfShattering().collect();
 			//new ScrollOfRevelation().collect();
