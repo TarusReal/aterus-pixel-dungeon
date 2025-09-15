@@ -31,7 +31,9 @@ public class CheckedCell extends Image {
 	
 	private float alpha;
 	private float delay;
-	
+	private Runnable onReveal;
+	private int color;
+
 	public CheckedCell( int pos ) {
 		super( TextureCache.createSolid( 0xFF55AAFF ) );
 
@@ -54,15 +56,38 @@ public class CheckedCell extends Image {
 		}
 	}
 	
+	public CheckedCell(int pos, int visSource, Runnable onReveal) {
+		this(pos, visSource);
+		this.onReveal = onReveal;
+	}
+
+	public CheckedCell(int pos, int visSource, Runnable onReveal, int color) {
+		this(pos, visSource, onReveal);
+		this.color = color;
+		setColor();
+	}
+
+	private void setColor() {
+		if (color != 0) {
+			this.texture(TextureCache.createSolid(color));
+		}
+	}
+
 	@Override
 	public void update() {
 		if ((delay -= Game.elapsed) > 0){
 			alpha( 0 );
-		} else if ((alpha -= Game.elapsed) > 0) {
-			alpha( alpha );
-			scale.set( DungeonTilemap.SIZE * alpha );
 		} else {
-			killAndErase();
+			if (onReveal != null) {
+				onReveal.run();
+				onReveal = null;
+			}
+			if ((alpha -= Game.elapsed) > 0) {
+				alpha( alpha );
+				scale.set( DungeonTilemap.SIZE * alpha );
+			} else {
+				killAndErase();
+			}
 		}
 	}
 }
