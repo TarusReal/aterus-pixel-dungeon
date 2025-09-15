@@ -42,7 +42,35 @@ public class PotionOfMindVision extends Potion {
 		Buff.prolong( hero, MindVision.class, MindVision.DURATION );
 		SpellSprite.show(hero, SpellSprite.VISION, 1, 0.77f, 0.9f);
 		Dungeon.observe();
-		
+
+		// Alle Mobs ausblenden und deren Tiles unsichtbar machen
+		for (com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob mob : Dungeon.level.mobs) {
+			if (mob.sprite != null) mob.sprite.visible = false;
+			Dungeon.level.mapped[mob.pos] = false;
+		}
+
+		// Schockwellen-Animation in rot, Gegner und deren Tiles werden synchron sichtbar
+		int length = Dungeon.level.length();
+		int centerCell = hero.pos;
+		for (int i = 0; i < length; i++) {
+			final int cell = i;
+			com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.effectOverFog(
+				new com.shatteredpixel.shatteredpixeldungeon.effects.CheckedCell(cell, centerCell, () -> {
+					for (com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob mob : Dungeon.level.mobs) {
+						if (mob.pos == cell && mob.sprite != null) {
+							// Tile und Kreatur synchron sichtbar machen
+							Dungeon.level.mapped[cell] = true;
+							Dungeon.level.discover(cell);
+							if (Dungeon.level.heroFOV[cell]) {
+								com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.discoverTile(cell, Dungeon.level.map[cell]);
+							}
+							mob.sprite.visible = true;
+						}
+					}
+				}, 0xFFFF0000)
+			);
+		}
+
 		if (Dungeon.level.mobs.size() > 0) {
 			GLog.i( Messages.get(this, "see_mobs") );
 		} else {

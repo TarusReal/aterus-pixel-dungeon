@@ -8,18 +8,18 @@ public class BerryPieRecipe extends Recipe {
     @Override
     public boolean testIngredients(ArrayList<Item> ingredients) {
         boolean berry = false;
-        boolean meatPie = false;
+        boolean pasty = false;
         for (Item ingredient : ingredients) {
             if (ingredient.quantity() > 0) {
                 if (ingredient instanceof Berry || ingredient instanceof GreenBerry) {
                     berry = true;
                 }
-                if (ingredient instanceof MeatPie) {
-                    meatPie = true;
+                if (ingredient instanceof Pasty) {
+                    pasty = true;
                 }
             }
         }
-        return berry && meatPie && ingredients.size() == 2;
+        return berry && pasty && ingredients.size() == 2;
     }
 
     @Override
@@ -29,6 +29,12 @@ public class BerryPieRecipe extends Recipe {
 
     @Override
     public Item brew(ArrayList<Item> ingredients) {
+        for (Item ingredient : ingredients) {
+            ingredient.quantity(ingredient.quantity() - 1);
+            if (ingredient.quantity() <= 0) {
+                ingredient.detach(com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero.belongings.backpack);
+            }
+        }
         return sampleOutput(ingredients);
     }
 
