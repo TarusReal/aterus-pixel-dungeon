@@ -213,6 +213,7 @@ public abstract class Recipe {
 		new ReclaimTrap.Recipe(),
 		new WildEnergy.Recipe(),
 		new StewedMeat.twoMeat(),
+		new com.shatteredpixel.shatteredpixeldungeon.items.food.BerryPieRecipe(),
 	};
 	
 	private static Recipe[] threeIngredientRecipes = new Recipe[]{
