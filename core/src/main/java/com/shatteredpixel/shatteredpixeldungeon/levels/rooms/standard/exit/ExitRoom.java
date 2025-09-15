@@ -101,6 +101,7 @@ public class ExitRoom extends StandardRoom {
 	private static float[][] chances = new float[27][];
 	static {
 		//floor 1 only uses simpler exit rooms
+		chances[0] =  new float[]{4,3,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0};
 		chances[1] =  new float[]{4,3,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0};
 		chances[2] =  new float[]{4,3,2,1, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0};
 		chances[5] =  chances[4] = chances[3] = chances[2];
@@ -119,6 +120,6 @@ public class ExitRoom extends StandardRoom {
 	}
 
 	public static StandardRoom createExit(){
-		return Reflection.newInstance(rooms.get(Random.chances(chances[Dungeon.depth])));
+		return Reflection.newInstance(rooms.get(Random.chances(chances[Math.max(Dungeon.depth,0)])));
 	}
 }

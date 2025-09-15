@@ -76,6 +76,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfRandom;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.BookOfNecromancy;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SaltCube;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfSheep;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.*;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
@@ -155,7 +156,8 @@ public enum HeroClass {
 				new StoneOfRandom().collect();
 				new PotionOfStrength().collect();
 			}
-			new GoldSword().collect();
+			new Halberd().collect();
+			new WandOfSheep().collect();
 			//new ScrollOfWisdom().collect();
 			//new ScrollOfShattering().collect();
 			//new ScrollOfRevelation().collect();

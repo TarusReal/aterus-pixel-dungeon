@@ -867,7 +867,7 @@ public class Generator {
 		}
 
 		//if no artifacts are left, return null
-		if (i == -1){
+		if (i == -1 || i < 0 || i >= cat.classes.length){
 			return null;
 		}
 

@@ -163,6 +163,7 @@ public class EntranceRoom extends StandardRoom {
 	private static float[][] chances = new float[27][];
 	static {
 		//first 2 floors only use simpler entrance rooms
+		chances[0] =  new float[]{4,3,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0};
 		chances[1] =  new float[]{4,3,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0};
 		chances[2] =  chances[1];
 		chances[3] =  new float[]{4,3,2,1, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0};
@@ -182,7 +183,7 @@ public class EntranceRoom extends StandardRoom {
 	}
 
 	public static StandardRoom createEntrance(){
-		return Reflection.newInstance(rooms.get(Random.chances(chances[Dungeon.depth])));
+		return Reflection.newInstance(rooms.get(Random.chances(chances[Math.max(Dungeon.depth,0)])));
 	}
 
 }
