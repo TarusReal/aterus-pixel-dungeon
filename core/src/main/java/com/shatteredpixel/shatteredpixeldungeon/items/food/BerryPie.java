@@ -16,7 +16,7 @@ public class BerryPie extends Food {
     @Override
     protected void satisfy(Hero hero) {
         super.satisfy(hero);
-        Buff.affect(hero, WellFed.class).reset();
+        Buff.affect(hero, WellFed.class).reset(200);
     }
 
     @Override
