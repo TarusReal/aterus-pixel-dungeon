@@ -56,6 +56,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.GreenBerry;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
@@ -156,6 +157,7 @@ public enum HeroClass {
 				new PotionOfStrength().collect();
 			}
 			new GoldSword().collect();
+			new GreenBerry().collect();
 			//new ScrollOfWisdom().collect();
 			//new ScrollOfShattering().collect();
 			//new ScrollOfRevelation().collect();
