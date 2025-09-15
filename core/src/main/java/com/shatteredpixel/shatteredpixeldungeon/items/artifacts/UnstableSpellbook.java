@@ -122,6 +122,7 @@ public class UnstableSpellbook extends Artifact {
 			else if (cursed)                          GLog.i( Messages.get(this, "cursed") );
 			else if (scrolls.size() == 1) {
 				// Nur eine Schriftrolle im Buch: direkt ausführen
+				if (charge > 0) charge--;
 				try {
 					Scroll scroll = (Scroll) Reflection.newInstance(scrolls.get(0));
 					curItem = scroll;

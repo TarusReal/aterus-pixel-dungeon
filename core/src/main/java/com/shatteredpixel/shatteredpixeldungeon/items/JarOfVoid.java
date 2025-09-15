@@ -15,6 +15,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
@@ -73,6 +74,7 @@ public class JarOfVoid extends Item {
         Hero hero = Dungeon.hero;
 
         // Suck in all non-boss enemies
+        boolean mobKilled = false;
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
             if (mob.alignment == Char.Alignment.ENEMY && !mob.properties().contains(Char.Property.BOSS)) {
                 // Calculate distance for damage
@@ -98,16 +100,23 @@ public class JarOfVoid extends Item {
 
                 // Prevent XP gain and apply damage/vertigo
                 Buff.affect(mob, NoXPBuff.class, 1f);
+                int hpBefore = mob.HP;
                 mob.damage(damage, this);
+                if (mob.HP <= 0 && hpBefore > 0 && !Dungeon.level.heroFOV[mob.pos]) {
+                    mobKilled = true;
+                }
                 Buff.affect(mob, Vertigo.class, 3f);
             }
         }
-
         // Damage the player if too close
         int heroDist = Dungeon.level.distance(cell, hero.pos);
         if (heroDist <= 2) {
             int damage = (3 - heroDist) * 20; // 20 damage at distance 1, 40 at distance 0
             hero.damage(damage, this);
+        }
+        // Zeige die Nachricht nur einmal, wenn mindestens ein Mob außerhalb des Sichtfelds getötet wurde
+        if (mobKilled) {
+            GLog.n(Messages.get(JarOfVoid.class, "death")); // Rot statt Standardfarbe
         }
     }
 

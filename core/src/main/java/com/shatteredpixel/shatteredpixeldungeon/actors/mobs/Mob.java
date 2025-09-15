@@ -908,8 +908,12 @@ public abstract class Mob extends Char {
 		}
 
 		if (Dungeon.hero.isAlive() && !Dungeon.level.heroFOV[pos]) {
-			GLog.i( Messages.get(this, "died") );
-		}
+            if (cause instanceof com.shatteredpixel.shatteredpixeldungeon.items.JarOfVoid) {
+                // Nachricht wird jetzt in JarOfVoid.activate() ausgegeben
+            } else {
+                GLog.i(Messages.get(this, "died"));
+            }
+        }
 
 		boolean soulMarked = buff(SoulMark.class) != null;
 

@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Camouflage;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Berry;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.GreenBerry;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.PetrifiedSeed;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
@@ -105,7 +106,11 @@ public class HighGrass {
 
 						if (droppingBerry) {
 							dropped.countUp(1);
-							level.drop(new Berry(), pos).sprite.drop();
+							if (Random.Int(2) == 0) {
+                                level.drop(new Berry(), pos).sprite.drop();
+                            } else {
+                                level.drop(new GreenBerry(), pos).sprite.drop();
+                            }
 						}
 					}
 
@@ -122,18 +127,34 @@ public class HighGrass {
 			if (naturalismLevel >= 0) {
 				// Seed, scales from 1/25 to 1/9
 				float lootChance = 1/(25f - naturalismLevel*4f);
+				//float lootChance = 1;
 
 				// absolute max drop rate is ~1/6.5 with footwear of nature, ~1/18 without
 				lootChance *= PetrifiedSeed.grassLootMultiplier();
 
 				if (Random.Float() < lootChance) {
-					if (Random.Float() < PetrifiedSeed.stoneInsteadOfSeedChance()) {
-						level.drop(Generator.randomUsingDefaults(Generator.Category.STONE), pos).sprite.drop();
-					} else {
-						level.drop(Generator.random(Generator.Category.SEED), pos).sprite.drop();
-					}
-				}
-				
+                    int dropType = Random.Int(10); // 0: Seed, 1: Seed, 2: Berry, 3: GreenBerry
+                    if (dropType < 8) {
+                        if (Random.Float() < PetrifiedSeed.stoneInsteadOfSeedChance()) {
+                            level.drop(Generator.randomUsingDefaults(Generator.Category.STONE), pos).sprite.drop();
+                        } else {
+                            level.drop(Generator.random(Generator.Category.SEED), pos).sprite.drop();
+                        }
+                    } else if (dropType == 8) {
+                        level.drop(new Berry(), pos).sprite.drop();
+                    } else {
+                        level.drop(new GreenBerry(), pos).sprite.drop();
+                    }
+                }
+                // Beeren-Drop unabhängig von Samen, mit gleicher Wahrscheinlichkeit
+                if (Random.Float() < lootChance) {
+                    if (Random.Int(2) == 0) {
+                        level.drop(new Berry(), pos).sprite.drop();
+                    } else {
+                        level.drop(new GreenBerry(), pos).sprite.drop();
+                    }
+                }
+
 				// Dew, scales from 1/6 to 1/4
 				lootChance = 1/(6f -naturalismLevel/2f);
 
