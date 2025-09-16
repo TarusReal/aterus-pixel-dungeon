@@ -144,6 +144,7 @@ public enum HeroClass {
 			new ScrollOfRecharging().collect();
 			new ScrollOfTeleportation().collect();
 			new ScrollOfTerror().collect();
+			new ScrollOfGuidance().collect();
 			new ScrollHolder().collect();
 			new ScrollOfChallenge().collect();
 			new PotionBandolier().collect();

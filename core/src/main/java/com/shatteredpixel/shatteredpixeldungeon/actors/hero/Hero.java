@@ -536,7 +536,7 @@ public class Hero extends Char {
 		}
 		
 		if (!RingOfForce.fightingUnarmed(this)) {
-			return (int)(attackSkill * accuracy * wep.accuracyFactor( this, target ));
+			return (int)(attackSkill * accuracy * wep.accuracyFactor( this, target  ));
 		} else {
 			return (int)(attackSkill * accuracy);
 		}
@@ -1834,6 +1834,11 @@ public class Hero extends Char {
 			sprite.move(pos, step);
 			move(step);
 
+			// GuidanceBuff entfernen, wenn Spieler auf Ausgangsfeld tritt
+			if (Dungeon.level.map[pos] == Terrain.EXIT) {
+				com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff.detach(this, com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfGuidance.GuidanceBuff.class);
+			}
+
 			spend( delay );
 			justMoved = true;
 			
@@ -1900,7 +1905,7 @@ public class Hero extends Char {
 				//...but only for standard heaps. Chests and similar open as normal.
 				(heap.type != Type.HEAP && heap.type != Type.FOR_SALE))) {
 
-			switch (heap.type) {
+					switch (heap.type) {
 			case HEAP:
 				curAction = new HeroAction.PickUp( cell );
 				break;
@@ -2247,7 +2252,12 @@ public class Hero extends Char {
 		boolean wasHighGrass = Dungeon.level.map[step] == Terrain.HIGH_GRASS;
 
 		super.move( step, travelling);
-		
+
+		// GuidanceBuff entfernen, wenn Spieler auf Ausgangsfeld tritt
+		if (Dungeon.level.map[pos] == Terrain.EXIT) {
+			com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff.detach(this, com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfGuidance.GuidanceBuff.class);
+		}
+
 		if (!flying && travelling) {
 			if (Dungeon.level.water[pos]) {
 				Sample.INSTANCE.play( Assets.Sounds.WATER, 1, Random.Float( 0.8f, 1.25f ) );
