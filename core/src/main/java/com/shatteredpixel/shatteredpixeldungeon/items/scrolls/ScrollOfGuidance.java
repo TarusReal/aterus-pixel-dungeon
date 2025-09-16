@@ -11,6 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.gltextures.TextureCache;
 import com.watabou.noosa.Image;
 import com.watabou.utils.PathFinder;
@@ -22,7 +23,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 public class ScrollOfGuidance extends Scroll {
 
     {
-        //icon = ItemSpriteSheet.Icons.SCROLL_GUIDANCE;
+        icon = ItemSpriteSheet.Icons.SCROLL_GUIDANCE;
     }
 
     // Hilfsmethode zur Fallen-Erkennung
@@ -37,6 +38,7 @@ public class ScrollOfGuidance extends Scroll {
         int exit = Dungeon.level.exit();
         int length = Dungeon.level.length();
         boolean[] passable = new boolean[length];
+        GLog.i( Messages.get(this, "way") );
         for (int i = 0; i < length; i++) {
             int terr = Dungeon.level.map[i];
             passable[i] = ((Terrain.flags[terr] & Terrain.PASSABLE) != 0) && !isTrap(terr);
@@ -44,7 +46,7 @@ public class ScrollOfGuidance extends Scroll {
         }
         PathFinder.setMapSize(Dungeon.level.width(), Dungeon.level.height());
         PathFinder.Path path = PathFinder.find(start, exit, passable);
-        if (path == null || path.isEmpty()) {
+        if (path == null || path.isEmpty()) {;
             identify();
             readAnimation();
             return;
@@ -103,7 +105,7 @@ public class ScrollOfGuidance extends Scroll {
     public static class GuidanceBuff extends com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff {
         {
             type = buffType.POSITIVE;
-            announced = true;
+            announced = false;
         }
         private HashSet<Integer> path;
         private HashSet<Integer> mainPath;
