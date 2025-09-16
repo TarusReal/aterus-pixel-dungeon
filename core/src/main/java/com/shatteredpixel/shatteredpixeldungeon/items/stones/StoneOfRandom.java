@@ -1,17 +1,22 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.stones;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 import java.util.*;
 
-public class StoneOfRandom extends InventoryStone {
-    private int uses = 2;
-
+public class StoneOfRandom extends Runestone {
+    Class<? extends Runestone> chosen;
     // Eine Wahrscheinlichkeits-Liste für alle Steine
     private static final LinkedHashMap<Class<? extends Runestone>, Float> STONE_PROBABILITIES = new LinkedHashMap<>();
+
     static {
         STONE_PROBABILITIES.put(StoneOfAggression.class, 0.125f);
         STONE_PROBABILITIES.put(StoneOfBlast.class, 0.125f);
@@ -28,25 +33,29 @@ public class StoneOfRandom extends InventoryStone {
 
     public StoneOfRandom() {
         super();
-         image =  ItemSpriteSheet.STONE_RANDOM;
+        image = ItemSpriteSheet.STONE_RANDOM;
     }
 
+    public static class RandomUseTracker extends Buff {
+        {
+            revivePersists = true;
+        }}
+
+    ;
 
     protected void doUse(int cell) {
-        if (uses <= 0) return;
-        uses--;
-        Class<? extends Runestone> chosen = chooseRunestone();
+
+        chosen = chooseRunestone();
         if (chosen != null) {
             try {
                 Runestone stone = chosen.getDeclaredConstructor().newInstance();
-                stone.anonymize();
+                // stone.anonymize();
                 stone.activate(cell);
+                System.out.println("Random stone used: " + chosen.getSimpleName());
+
             } catch (Exception e) {
                 // Fehlerbehandlung
             }
-        }
-        if (uses == 0) {
-            detach(Dungeon.hero.belongings.backpack);
         }
     }
 
@@ -56,7 +65,26 @@ public class StoneOfRandom extends InventoryStone {
     }
 
     @Override
-    protected void onItemSelected(Item item) {
+    protected void onThrow(int cell) {
+        if (!anonymous) {
+            Catalog.countUse(getClass());
+            Talent.onRunestoneUsed(curUser, cell, getClass());
+
+            if (curUser.buff(RandomUseTracker.class) == null) {
+                Buff.affect(curUser, RandomUseTracker.class);
+                Heap heap = Dungeon.level.drop(this, cell);
+                if (!heap.isEmpty()) {
+                    heap.sprite.drop(cell);
+                }
+            } else {
+                curUser.buff(RandomUseTracker.class).detach();
+            }
+
+        }
+
+        activate(cell);
+        if (Actor.findChar(cell) == null) Dungeon.level.pressCell(cell);
+        Invisibility.dispel();
 
     }
 
@@ -80,15 +108,12 @@ public class StoneOfRandom extends InventoryStone {
 
     @Override
     public String desc() {
-        String text = "Ein mysteriöser Runenstein, der bei jeder Nutzung zufällig den Effekt eines anderen Runensteins auslöst. Kann zweimal verwendet werden.";
+        String text = super.desc();
         if (Dungeon.hero != null) {
-            if (uses == 2) {
+            if (Dungeon.hero.buff(RandomUseTracker.class) == null) {
                 text += "\n\n" + Messages.get(this, "break_info");
-            } else if (uses == 1) {
+            } else {
                 text += "\n\n" + Messages.get(this, "break_warn");
-            }
-            else if(uses <= 0) {
-               text+= "you should not see this";
             }
         }
         return text;

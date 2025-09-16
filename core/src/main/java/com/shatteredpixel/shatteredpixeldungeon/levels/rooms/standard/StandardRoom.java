@@ -168,6 +168,7 @@ public abstract class StandardRoom extends Room {
 	
 	private static float[][] chances = new float[27][];
 	static {
+		chances[0] =  new float[]{16,8,8,4,4,   0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0,  1,0,1,0,1,0,1,1,0,0};
 		chances[1] =  new float[]{16,8,8,4,4,   0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0,  1,0,1,0,1,0,1,1,0,0};
 		chances[2] =  new float[]{16,8,8,4,4,   0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0,  1,1,1,1,1,1,1,1,1,1};
 		chances[4] =  chances[3] = chances[2];
@@ -188,7 +189,7 @@ public abstract class StandardRoom extends Room {
 	
 	
 	public static StandardRoom createRoom(){
-		return Reflection.newInstance(rooms.get(Random.chances(chances[Dungeon.depth])));
+		return Reflection.newInstance(rooms.get(Random.chances(chances[Math.max(Dungeon.depth,0)])));
 	}
 	
 }

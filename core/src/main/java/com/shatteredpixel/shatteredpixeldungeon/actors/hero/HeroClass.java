@@ -70,11 +70,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.*;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPrismaticImage;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfDisarming;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfRandom;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.BookOfNecromancy;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SaltCube;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfSheep;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.*;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
@@ -154,11 +156,12 @@ public enum HeroClass {
 			for (int j = 0; j < 10; j++) {
 				new StoneOfRandom().collect();
 				new PotionOfStrength().collect();
+				new ScrollOfUpgrade().collect();
 			}
-			new GoldSword().collect();
-			new BerryPie().collect();
-			new MeatPie().collect();
-			//new AlchemistsToolkit().collect();
+			new Halberd().collect();
+			new WandOfSheep().collect();
+			new ScrollOfPrismaticImage().collect();
+			new AlchemistsToolkit().collect();
 			//new ScrollOfWisdom().collect();
 			//new ScrollOfShattering().collect();
 			//new ScrollOfRevelation().collect();

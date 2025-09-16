@@ -192,9 +192,13 @@ public class SewerLevel extends RegularLevel {
 				}
 				else
 				{
-					Statistics.ascended = false;
-					//forced transition, don't do all the winning stuff
-					Game.switchScene(SurfaceScene.class);
+					// forced transition, generiere ein neues SewerLevel auf Ebene 0
+					Dungeon.depth = 0;
+					Dungeon.level = new SewerLevel();
+					Dungeon.level.create();
+					Game.switchScene(GameScene.class);
+					//Statistics.ascended = false;
+					//Game.switchScene(SurfaceScene.class);
 					return true;
 				}
 			}
