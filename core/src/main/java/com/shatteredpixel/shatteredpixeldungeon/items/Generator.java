@@ -97,19 +97,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutat
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Spell;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlast;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlink;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfClairvoyance;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfDeepSleep;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfDetectMagic;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfFear;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfFlock;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfIntuition;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfShock;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.*;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ChaoticCenser;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.DimensionalSundial;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ExoticCrystals;
@@ -388,9 +376,10 @@ public class Generator {
 					StoneOfAggression.class,
 					StoneOfBlast.class,
 					StoneOfFear.class,
-					StoneOfAugmentation.class  //1 is sold in each shop
+					StoneOfAugmentation.class,  //1 is sold in each shop
+					StoneOfRevelation.class    // hinzugefügt
 			};
-			STONE.defaultProbs = new float[]{ 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0 };
+			STONE.defaultProbs = new float[]{ 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2 };
 			STONE.probs = STONE.defaultProbs.clone();
 
 			WAND.classes = new Class<?>[]{

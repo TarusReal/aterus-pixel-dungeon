@@ -73,6 +73,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfCha
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPrismaticImage;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfDisarming;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfRandom;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfRevelation;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.BookOfNecromancy;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SaltCube;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
@@ -159,6 +160,7 @@ public enum HeroClass {
 				new ScrollOfUpgrade().collect();
 			}
 			new Halberd().collect();
+			new StoneOfRevelation().collect();
 			new WandOfSheep().collect();
 			new ScrollOfPrismaticImage().collect();
 			new AlchemistsToolkit().collect();

@@ -610,6 +610,7 @@ public class ItemSpriteSheet {
 	public static final int STONE_SHOCK         = STONES+11;
 	public static final int STONE_STRENGTH      = STONES+12;
 	public static final int STONE_RANDOM     = STONES+13;
+	public static final int STONE_REVELATION = xy(1, 20)+13;
 	static {
 		for (int i = STONES; i < STONES+16; i++)
 			assignItemRect(i, 14, 12);
