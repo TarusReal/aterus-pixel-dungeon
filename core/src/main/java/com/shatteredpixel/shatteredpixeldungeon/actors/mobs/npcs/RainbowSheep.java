@@ -63,7 +63,6 @@ public class RainbowSheep extends Sheep {
 
     @Override
     public boolean interact(Char c) {
-        Bestiary.setSeen(getClass());
         if (c == Dungeon.hero) {
             Sample.INSTANCE.play(Assets.Sounds.SHEEP, 1, Random.Float(0.91f, 1.1f));
             // Spieler auf das Feld des Schafs bewegen

@@ -284,16 +284,9 @@ public enum HeroClass {
 		new ScrollOfLullaby().identify();
 	}
 
-	private static void showprocInfo() {
 
-		// JumpscareManager.showImage("jumpscare.png");
-		// JumpscareManager.playSound("jumpscare.wav");
-		// Hier Platzhalter-Implementierung
-		System.out.println("JUMPSCARE!");
-	}
 
 	private static void initDuelist( Hero hero ) {
-		showprocInfo();
 		(hero.belongings.weapon = new Rapier()).identify();
 		hero.belongings.weapon.activate(hero);
 
