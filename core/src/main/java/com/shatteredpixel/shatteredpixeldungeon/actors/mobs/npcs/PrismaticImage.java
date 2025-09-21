@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PrismaticGuard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Stasis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -75,7 +76,13 @@ public class PrismaticImage extends NPC {
 			deathTimer--;
 			
 			if (deathTimer > 0) {
+
+				if (Stasis.getStasisAlly() instanceof PrismaticImage) {
+					sprite.alpha(0);
+					return true;
+				}
 				sprite.alpha((deathTimer + 3) / 8f);
+
 				spend(TICK);
 			} else {
 				destroy();

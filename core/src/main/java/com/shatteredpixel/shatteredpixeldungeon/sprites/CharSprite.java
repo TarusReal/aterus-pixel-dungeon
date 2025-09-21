@@ -787,6 +787,45 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 
 	}
 
+
+
+	public void draw(float alpha) {
+		if (texture == null || (!dirty && buffer == null))
+			return;
+
+		if (renderShadow) {
+			if (dirty) {
+				((Buffer)verticesBuffer).position(0);
+				verticesBuffer.put(vertices);
+				if (buffer == null)
+					buffer = new Vertexbuffer(verticesBuffer);
+				else
+					buffer.updateVertices(verticesBuffer);
+				dirty = false;
+			}
+
+			NoosaScript script = script();
+
+			texture.bind();
+
+			script.camera(camera());
+
+			updateMatrix();
+
+			script.uModel.valueM4(shadowMatrix);
+			script.lighting(
+					0, 0, 0, am * alpha,
+					0, 0, 0, aa * alpha);
+
+			script.drawQuad(buffer);
+		}
+
+		super.draw();
+
+	}
+
+
+
 	@Override
 	public void onComplete( Tweener tweener ) {
 		if (tweener == jumpTweener) {

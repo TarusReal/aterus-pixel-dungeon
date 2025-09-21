@@ -21,13 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
-import com.shatteredpixel.shatteredpixeldungeon.Chrome;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
-import com.shatteredpixel.shatteredpixeldungeon.Rankings;
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.badlogic.gdx.utils.Timer;
+import com.shatteredpixel.shatteredpixeldungeon.*;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -136,13 +131,28 @@ public class HeroSelectScene extends PixelScene {
 
 				if (GamesInProgress.selectedClass == null) return;
 
-				Dungeon.hero = null;
-				Dungeon.daily = Dungeon.dailyReplay = false;
-				Dungeon.initSeed();
-				ActionIndicator.clearAction();
-				InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
-
-				Game.switchScene( InterlevelScene.class );
+				if (GamesInProgress.selectedClass == HeroClass.DUELIST) {
+					background.texture(Assets.Splashes.DUELIST2);
+					Timer.schedule(new Timer.Task() {
+						@Override
+						public void run() {
+							background.texture(TextureCache.createSolid(0xFF2d2f31)); // Standardbild zurücksetzen
+							Dungeon.hero = null;
+							Dungeon.daily = Dungeon.dailyReplay = false;
+							Dungeon.initSeed();
+							ActionIndicator.clearAction();
+							InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+							Game.switchScene( InterlevelScene.class );
+						}
+					}, 3); // 1 Sekunde Verzögerung
+				} else {
+					Dungeon.hero = null;
+					Dungeon.daily = Dungeon.dailyReplay = false;
+					Dungeon.initSeed();
+					ActionIndicator.clearAction();
+					InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+					Game.switchScene( InterlevelScene.class );
+				}
 			}
 		};
 		startBtn.icon(Icons.get(Icons.ENTER));

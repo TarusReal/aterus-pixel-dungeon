@@ -84,6 +84,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSp
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.watabou.gltextures.TextureCache;
+import com.watabou.noosa.Game;
 import com.watabou.utils.DeviceCompat;
 
 public enum HeroClass {
@@ -279,8 +281,16 @@ public enum HeroClass {
 		new ScrollOfLullaby().identify();
 	}
 
-	private static void initDuelist( Hero hero ) {
+	private static void showprocInfo() {
 
+		// JumpscareManager.showImage("jumpscare.png");
+		// JumpscareManager.playSound("jumpscare.wav");
+		// Hier Platzhalter-Implementierung
+		System.out.println("JUMPSCARE!");
+	}
+
+	private static void initDuelist( Hero hero ) {
+		showprocInfo();
 		(hero.belongings.weapon = new Rapier()).identify();
 		hero.belongings.weapon.activate(hero);
 
