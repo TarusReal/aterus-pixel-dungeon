@@ -205,4 +205,13 @@ public class Buff extends Actor {
 			b.detach();
 		}
 	}
+
+	public static <T extends Buff> T find(Char target, Class<T> buffClass) {
+		for (Buff buff : target.buffs()) {
+			if (buffClass.isInstance(buff)) {
+				return buffClass.cast(buff);
+			}
+		}
+		return null;
+	}
 }

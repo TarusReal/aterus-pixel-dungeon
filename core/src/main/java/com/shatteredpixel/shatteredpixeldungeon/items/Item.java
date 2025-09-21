@@ -302,28 +302,19 @@ public class Item implements Bundlable {
 	}
 	
 	public final Item detach( Bag container ) {
-		
 		if (quantity <= 0) {
-			
-			return null;
-			
-		} else
-		if (quantity == 1) {
-
+			// Immer aus dem Inventar entfernen, wenn keine Exemplare mehr vorhanden sind
+			return detachAll(container);
+		} else if (quantity == 1) {
 			if (stackable){
 				Dungeon.quickslot.convertToPlaceholder(this);
 			}
-
 			return detachAll( container );
-			
 		} else {
-			
-			
 			Item detached = split(1);
 			updateQuickslot();
 			if (detached != null) detached.onDetach( );
 			return detached;
-			
 		}
 	}
 	

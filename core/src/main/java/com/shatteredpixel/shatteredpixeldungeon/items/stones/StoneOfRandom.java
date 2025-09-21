@@ -29,6 +29,7 @@ public class StoneOfRandom extends Runestone {
         STONE_PROBABILITIES.put(StoneOfDetectMagic.class, 0.0625f);
         STONE_PROBABILITIES.put(StoneOfIntuition.class, 0.0625f);
         STONE_PROBABILITIES.put(StoneOfEnchantment.class, 0.0625f);
+        STONE_PROBABILITIES.put(StoneOfRevelation.class, 0.125f);
     }
 
     public StoneOfRandom() {

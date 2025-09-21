@@ -32,7 +32,7 @@ public class CheckedCell extends Image {
 	private float alpha;
 	private float delay;
 	private Runnable onReveal;
-	private int color;
+	public int color;
 
 	public CheckedCell( int pos ) {
 		super( TextureCache.createSolid( 0xFF55AAFF ) );
@@ -89,5 +89,10 @@ public class CheckedCell extends Image {
 				killAndErase();
 			}
 		}
+	}
+
+	public CheckedCell withAlpha(float alpha) {
+		this.alpha = alpha;
+		return this;
 	}
 }

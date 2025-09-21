@@ -56,6 +56,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.TelekineticGrab;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.UnstableSpell;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfRandomRecipe;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfRevelationRecipe;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
@@ -195,7 +196,8 @@ public abstract class Recipe {
 		new StewedMeat.oneMeat(),
 		new TrinketCatalyst.Recipe(),
 		new Trinket.UpgradeTrinket(),
-		new StoneOfRandomRecipe()
+		new StoneOfRandomRecipe(),
+		new StoneOfRevelationRecipe()
 
 	};
 	
