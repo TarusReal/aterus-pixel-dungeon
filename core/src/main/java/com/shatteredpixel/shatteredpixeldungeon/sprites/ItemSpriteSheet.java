@@ -550,7 +550,7 @@ public class ItemSpriteSheet {
 
 	}
 
-	private static final int SCROLLS        =                               xy(1, 19);  //16 slots
+	public static final int SCROLLS        =                               xy(1, 19);  //16 slots
 	public static final int SCROLL_KAUNAN   = SCROLLS+0;
 	public static final int SCROLL_SOWILO   = SCROLLS+1;
 	public static final int SCROLL_LAGUZ    = SCROLLS+2;
@@ -574,7 +574,7 @@ public class ItemSpriteSheet {
 		assignItemRect(ARCANE_RESIN   , 12, 11);
 	}
 	
-	private static final int EXOTIC_SCROLLS =                               xy(1, 20);  //16 slots
+	public static final int EXOTIC_SCROLLS =                               xy(1, 20);  //16 slots
 	public static final int EXOTIC_KAUNAN   = EXOTIC_SCROLLS+0;
 	public static final int EXOTIC_SOWILO   = EXOTIC_SCROLLS+1;
 	public static final int EXOTIC_LAGUZ    = EXOTIC_SCROLLS+2;
@@ -923,7 +923,7 @@ public class ItemSpriteSheet {
 			assignIconRect( SCROLL_GUIDANCE,    7, 7 );
 		}
 
-		private static final int EXOTIC_SCROLLS =                            xy(1, 4);  //16 slots
+		public static final int EXOTIC_SCROLLS =                            xy(1, 4);  //16 slots
 		public static final int SCROLL_ENCHANT  = EXOTIC_SCROLLS+0;
 		public static final int SCROLL_DIVINATE = EXOTIC_SCROLLS+1;
 		public static final int SCROLL_ANTIMAGIC= EXOTIC_SCROLLS+2;
@@ -936,6 +936,7 @@ public class ItemSpriteSheet {
 		public static final int SCROLL_PSIBLAST = EXOTIC_SCROLLS+9;
 		public static final int SCROLL_DREAD    = EXOTIC_SCROLLS+10;
 		public static final int SCROLL_METAMORPH= EXOTIC_SCROLLS+11;
+		public static final int SCROLL_FASTTRACK= EXOTIC_SCROLLS+12;
 		static {
 			assignIconRect( SCROLL_ENCHANT,     7, 7 );
 			assignIconRect( SCROLL_DIVINATE,    7, 6 );
@@ -949,6 +950,7 @@ public class ItemSpriteSheet {
 			assignIconRect( SCROLL_PSIBLAST,    5, 6 );
 			assignIconRect( SCROLL_DREAD,       5, 7 );
 			assignIconRect( SCROLL_METAMORPH,   7, 7 );
+			assignIconRect( SCROLL_FASTTRACK,   7, 7 );
 		}
 
 		                                                                                //16 free slots

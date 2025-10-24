@@ -1,9 +1,7 @@
-package com.shatteredpixel.shatteredpixeldungeon.items.scrolls;
+package com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic;
 
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
-import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -20,10 +18,10 @@ import java.util.HashSet;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
-public class ScrollOfGuidance extends Scroll {
+public class ScrollOfFasttrack extends ExoticScroll {
 
     {
-        icon = ItemSpriteSheet.Icons.SCROLL_GUIDANCE;
+        icon = ItemSpriteSheet.Icons.SCROLL_FASTTRACK;
     }
 
     // Hilfsmethode zur Fallen-Erkennung
@@ -116,6 +114,10 @@ public class ScrollOfGuidance extends Scroll {
         @Override
         public boolean attachTo(com.shatteredpixel.shatteredpixeldungeon.actors.Char target) {
             depth = Dungeon.depth;
+            // Make sure we don't attach if we're already on a different depth
+            if (Dungeon.depth != depth) {
+                return false;
+            }
             return super.attachTo(target);
         }
 
@@ -168,137 +170,146 @@ public class ScrollOfGuidance extends Scroll {
         public void detach() {
             if (hero != null) {
                 Buff.detach(hero, Haste.class);
+                Buff.detach(hero, Invisibility.class);
                 if (hero.sprite != null) {
-                    // Debug: Sprite-Status vor idle
-                    System.out.println("[GuidanceBuff.detach] Sprite before idle: looping=" + hero.sprite.looping() + ", isMoving=" + getSpriteField(hero.sprite, "isMoving"));
                     hero.sprite.idle();
-                    // Setze isMoving explizit auf false
                     try {
+                        // Reset isMoving flag
                         java.lang.reflect.Field isMovingField = hero.sprite.getClass().getDeclaredField("isMoving");
                         isMovingField.setAccessible(true);
                         isMovingField.setBoolean(hero.sprite, false);
-                    } catch (Exception e) {}
-                    // Setze curAnim auf idle und stoppe Animation
-                    try {
+
+                        // Reset animation state
                         java.lang.reflect.Field curAnimField = hero.sprite.getClass().getDeclaredField("curAnim");
                         curAnimField.setAccessible(true);
                         Object idleAnim = hero.sprite.getClass().getDeclaredField("idle").get(hero.sprite);
                         curAnimField.set(hero.sprite, idleAnim);
-                        // Setze looping und finished auf false/true
+
+                        // Reset animation flags
                         java.lang.reflect.Field loopingField = idleAnim.getClass().getDeclaredField("looped");
                         loopingField.setAccessible(true);
                         loopingField.setBoolean(idleAnim, false);
+
                         java.lang.reflect.Field finishedField = idleAnim.getClass().getDeclaredField("finished");
                         finishedField.setAccessible(true);
                         finishedField.setBoolean(idleAnim, true);
-                    } catch (Exception e) {}
-                    // Debug: Sprite-Status nach idle
-                    System.out.println("[GuidanceBuff.detach] Sprite after idle: looping=" + hero.sprite.looping() + ", isMoving=" + getSpriteField(hero.sprite, "isMoving"));
+                    } catch (Exception e) {
+                        // Ignore reflection errors
+                    }
                 }
-                // Neu: interrupt() aufrufen, um alle laufenden Aktionen zu stoppen
+
+                // Interrupt any ongoing actions
                 try {
                     java.lang.reflect.Method interruptMethod = hero.getClass().getDeclaredMethod("interrupt");
                     interruptMethod.setAccessible(true);
                     interruptMethod.invoke(hero);
-                } catch (Exception e) {}
-                // Debug: Log Status vor und nach ready()
-                System.out.println("[GuidanceBuff.detach] Vor ready: ready=" + getField(hero, "ready") + ", curAction=" + getField(hero, "curAction"));
-                try {
-                    java.lang.reflect.Method readyMethod = hero.getClass().getDeclaredMethod("ready");
-                    readyMethod.setAccessible(true);
-                    readyMethod.invoke(hero);
-                } catch (Exception e) {}
-                System.out.println("[GuidanceBuff.detach] Nach ready: ready=" + getField(hero, "ready") + ", curAction=" + getField(hero, "curAction"));
+                } catch (Exception e) {
+                    // Ignore reflection errors
+                }
             }
             super.detach();
         }
 
+        private void cleanupAllEffects() {
+            if (hero != null) {
+                // Mark as not announced to prevent any buff end messages
+                announced = false;
+                
+                // Remove both buffs and clear their visual states
+                Buff.detach(hero, Haste.class);
+                Buff.detach(hero, Invisibility.class);
+                
+                // Reset hero's action state
+                // The speed will be handled by removing the Haste buff above
+                hero.spend(-hero.cooldown()); // Reset cooldown
+                
+                // Reset sprite state if it exists
+                if (hero.sprite != null) {
+                    hero.sprite.idle();
+                    try {
+                        // Reset isMoving flag
+                        java.lang.reflect.Field isMovingField = hero.sprite.getClass().getDeclaredField("isMoving");
+                        isMovingField.setAccessible(true);
+                        isMovingField.setBoolean(hero.sprite, false);
+                        
+                        // Reset animation state
+                        java.lang.reflect.Field curAnimField = hero.sprite.getClass().getDeclaredField("curAnim");
+                        curAnimField.setAccessible(true);
+                        Object idleAnim = hero.sprite.getClass().getDeclaredField("idle").get(hero.sprite);
+                        curAnimField.set(hero.sprite, idleAnim);
+                        
+                        // Reset animation flags
+                        java.lang.reflect.Field loopingField = idleAnim.getClass().getDeclaredField("looped");
+                        loopingField.setAccessible(true);
+                        loopingField.setBoolean(idleAnim, false);
+                        
+                        java.lang.reflect.Field finishedField = idleAnim.getClass().getDeclaredField("finished");
+                        finishedField.setAccessible(true);
+                        finishedField.setBoolean(idleAnim, true);
+                    } catch (Exception e) {
+                        // Ignore reflection errors
+                    }
+                }
+                
+                // Interrupt any ongoing actions
+                try {
+                    java.lang.reflect.Method interruptMethod = hero.getClass().getDeclaredMethod("interrupt");
+                    interruptMethod.setAccessible(true);
+                    interruptMethod.invoke(hero);
+                } catch (Exception e) {
+                    // Ignore reflection errors
+                }
+                
+                // Clear the path to prevent further effects
+                path = null;
+                mainPath = null;
+            }
+        }
+        
         @Override
         public boolean act() {
+            // If we're on a different depth, clean up and detach
             if (Dungeon.depth != depth) {
-                if (hero != null) {
-                    Buff.detach(hero, Haste.class);
-                    if (hero.sprite != null) {
-                        // Debug: Sprite-Status vor idle
-                        System.out.println("[GuidanceBuff.act] Sprite before idle: looping=" + hero.sprite.looping() + ", isMoving=" + getSpriteField(hero.sprite, "isMoving"));
-                        hero.sprite.idle();
-                        // Setze isMoving explizit auf false
-                        try {
-                            java.lang.reflect.Field isMovingField = hero.sprite.getClass().getDeclaredField("isMoving");
-                            isMovingField.setAccessible(true);
-                            isMovingField.setBoolean(hero.sprite, false);
-                        } catch (Exception e) {}
-                        // Setze curAnim auf idle und stoppe Animation
-                        try {
-                            java.lang.reflect.Field curAnimField = hero.sprite.getClass().getDeclaredField("curAnim");
-                            curAnimField.setAccessible(true);
-                            Object idleAnim = hero.sprite.getClass().getDeclaredField("idle").get(hero.sprite);
-                            curAnimField.set(hero.sprite, idleAnim);
-                            // Setze looping und finished auf false/true
-                            java.lang.reflect.Field loopingField = idleAnim.getClass().getDeclaredField("looped");
-                            loopingField.setAccessible(true);
-                            loopingField.setBoolean(idleAnim, false);
-                            java.lang.reflect.Field finishedField = idleAnim.getClass().getDeclaredField("finished");
-                            finishedField.setAccessible(true);
-                            finishedField.setBoolean(idleAnim, true);
-                        } catch (Exception e) {}
-                        // Debug: Sprite-Status nach idle
-                        System.out.println("[GuidanceBuff.act] Sprite after idle: looping=" + hero.sprite.looping() + ", isMoving=" + getSpriteField(hero.sprite, "isMoving"));
-                    }
-                    // Neu: interrupt() aufrufen, um alle laufenden Aktionen zu stoppen
-                    try {
-                        java.lang.reflect.Method interruptMethod = hero.getClass().getDeclaredMethod("interrupt");
-                        interruptMethod.setAccessible(true);
-                        interruptMethod.invoke(hero);
-                    } catch (Exception e) {}
-                    // Debug: Log Status vor und nach ready()
-                    System.out.println("[GuidanceBuff.act] Vor ready: ready=" + getField(hero, "ready") + ", curAction=" + getField(hero, "curAction"));
-                    try {
-                        java.lang.reflect.Method readyMethod = hero.getClass().getDeclaredMethod("ready");
-                        readyMethod.setAccessible(true);
-                        readyMethod.invoke(hero);
-                    } catch (Exception e) {}
-                    System.out.println("[GuidanceBuff.act] Nach ready: ready=" + getField(hero, "ready") + ", curAction=" + getField(hero, "curAction"));
-                }
+                cleanupAllEffects();
                 detach();
-                return false;
+                return true;
             }
 
-            // If we somehow don't have a path or hero anymore, detach
-            if (path == null || hero == null) {
-                detach();
-                return false;
-            }
-
-            timeSinceLastPulse += Game.elapsed;
             try {
-                // Only update visibility and apply effects if we're on the correct depth
-                if (Dungeon.depth == depth) {
-                    // Update visibility of all path cells
-                    for (int cell : path) {
-                        // Make sure we don't go out of bounds
-                        if (cell >= 0 && cell < Dungeon.level.length()) {
-                            Dungeon.level.visited[cell] = true;
-                            Dungeon.level.mapped[cell] = true;
-                        }
-                    }
+                // Don't process if hero is invalid or in the process of changing floors
+                if (hero == null || hero.pos == -1) {
+                    spend(1f);
+                    return true;
+                }
+                
+                // If hero is on an exit, just return without cleaning up effects
+                if (Dungeon.level != null && hero.pos == Dungeon.level.exit()) {
+                    spend(1f);
+                    return true;
+                }
 
-                    // Trigger pulse effect at intervals for the main path
-                    if (timeSinceLastPulse >= PULSE_INTERVAL) {
-                        timeSinceLastPulse = 0f;
-                        pulseEffect();
-                    }
+                if (!announced) {
+                    announced = true;
+                    GLog.p(Messages.get(this, "announce"));
+                }
 
-                    // Apply Haste if hero is on the main path and on the same depth
-                    if (mainPath.contains(hero.pos)) {
-                        if (Buff.find(hero, Haste.class) == null) {
-                            Buff.prolong(hero, Haste.class, 2);
-                            SpellSprite.show(hero, SpellSprite.HASTE, 1, 1, 0);
-                        }
-                    } else {
-                        // Remove Haste if hero is not on the main path
-                        Buff.detach(hero, Haste.class);
+                timeSinceLastPulse += Game.elapsed;
+
+                if (timeSinceLastPulse >= PULSE_INTERVAL) {
+                    timeSinceLastPulse = 0f;
+                    pulseEffect();
+                }
+
+                // Only apply effects if hero is on the main path and not on an exit
+                if (mainPath.contains(hero.pos)) {
+                    if (Buff.find(hero, Haste.class) == null) {
+                        Buff.prolong(hero, Haste.class, 2);
+                        Buff.prolong(hero, Invisibility.class, 3);
+                        SpellSprite.show(hero, SpellSprite.HASTE, 1, 1, 0);
                     }
+                } else {
+                    // Remove Haste if hero is not on the main path
+                    Buff.detach(hero, Haste.class);
                 }
             } catch (Exception e) {
                 // If any error occurs, clean up and detach to prevent issues
