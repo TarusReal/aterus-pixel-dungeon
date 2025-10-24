@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Recipe;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.*;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ import java.util.LinkedHashMap;
 
 public abstract class ExoticScroll extends Scroll {
 	
+	protected int offset;
 	
 	public static final LinkedHashMap<Class<?extends Scroll>, Class<?extends ExoticScroll>> regToExo = new LinkedHashMap<>();
 	public static final LinkedHashMap<Class<?extends ExoticScroll>, Class<?extends Scroll>> exoToReg = new LinkedHashMap<>();
@@ -70,6 +72,9 @@ public abstract class ExoticScroll extends Scroll {
 		
 		regToExo.put(ScrollOfTransmutation.class, ScrollOfMetamorphosis.class);
 		exoToReg.put(ScrollOfMetamorphosis.class, ScrollOfTransmutation.class);
+
+		regToExo.put(ScrollOfGuidance.class, ScrollOfFasttrack.class);
+		exoToReg.put(ScrollOfFasttrack.class, ScrollOfGuidance.class);
 	}
 	
 	@Override
@@ -89,7 +94,14 @@ public abstract class ExoticScroll extends Scroll {
 	public void reset() {
 		super.reset();
 		if (handler != null && handler.contains(exoToReg.get(this.getClass()))) {
-			image = handler.image(exoToReg.get(this.getClass())) + 16;
+			// Get the regular scroll's image index
+			int regImage = handler.image(exoToReg.get(this.getClass()));
+			// Calculate the offset within the regular scroll section (0-15)
+			// regImage is a full-size scroll index (e.g. SCROLL_KAUNAN + offset).
+			// SCROLLS base is private, use the public SCROLL_KAUNAN as reference.
+			offset = regImage - ItemSpriteSheet.SCROLL_KAUNAN;
+			// Apply the same offset to the exotic full-size scroll section using public base
+			image = ItemSpriteSheet.EXOTIC_KAUNAN + offset;
 			rune = handler.label(exoToReg.get(this.getClass()));
 		}
 	}
