@@ -44,7 +44,6 @@ public class WandOfSheep extends Wand {
 
     @Override
     public void fx(Ballistica bolt, Callback callback) {
-        if (chargesPerCast() == 1) {
             cone = null;
             ((MagicMissile)curUser.sprite.parent.recycle( MagicMissile.class )).reset(
                     MagicMissile.MAGIC_MISS_CONE,
@@ -53,36 +52,11 @@ public class WandOfSheep extends Wand {
                     callback
             );
             Sample.INSTANCE.play( Assets.Sounds.ZAP );
-        } else {
-            int maxDist = 3 + 2*chargesPerCast();
-            cone = new ConeAOE( bolt,
-                    maxDist,
-                    30 + 20*chargesPerCast(),
-                    Ballistica.STOP_TARGET | Ballistica.STOP_SOLID | Ballistica.IGNORE_SOFT_SOLID);
-            Ballistica longestRay = null;
-            for (Ballistica ray : cone.outerRays){
-                if (longestRay == null || ray.dist > longestRay.dist){
-                    longestRay = ray;
-                }
-                ((MagicMissile)curUser.sprite.parent.recycle( MagicMissile.class )).reset(
-                        MagicMissile.MAGIC_MISS_CONE,
-                        curUser.sprite,
-                        ray.path.get(ray.dist),
-                        null
-                );
-            }
-            MagicMissile.boltFromChar( curUser.sprite.parent,
-                    MagicMissile.MAGIC_MISS_CONE,
-                    curUser.sprite,
-                    longestRay.path.get(longestRay.dist/2),
-                    callback );
-            Sample.INSTANCE.play( Assets.Sounds.ZAP );
-        }
+
     }
 
     @Override
     public void onZap(Ballistica bolt) {
-        if (chargesPerCast() == 1) {
             // Nur das Ziel-Feld prüfen
             int cell = target;
             //int terr = Dungeon.level.map[cell];
@@ -93,23 +67,10 @@ public class WandOfSheep extends Wand {
                     && Actor.findChar(cell) == null) {
                 RainbowSheep sheep = new RainbowSheep();
                 sheep.pos = cell;
-                sheep.initialize(10f + Random.Float(5f));
+                sheep.initialize(chargesPerCast(),10f + Random.Float(2f)+buffedLvl()*2f);
                 GameScene.add(sheep);
             }
-        } else {
-            if (cone == null) return; // Fehlerfall absichern
-            for (int cell : cone.cells) {
-                int terr = Dungeon.level.map[cell];
-                if ((terr == Terrain.EMPTY || terr == Terrain.EMBERS || terr == Terrain.EMPTY_DECO)
-                        && !Char.hasProp(Actor.findChar(cell), Char.Property.IMMOVABLE)
-                        && Actor.findChar(cell) == null) {
-                    Sheep sheep = new Sheep();
-                    sheep.pos = cell;
-                    sheep.initialize(10f + Random.Float(5f));
-                    GameScene.add(sheep);
-                }
-            }
-        }
+
     }
 
     @Override

@@ -21,9 +21,9 @@ public class RainbowSheep extends Sheep {
     {
         this.spriteClass = com.shatteredpixel.shatteredpixeldungeon.sprites.RainbowSheepSprite.class;
     }
-    void initialize(int depth, float lifespan) {
+    public void initialize(int depth, float lifespan) {
         super.initialize(lifespan);
-        if (depth > 0) {
+        if (depth > 1) {
             ArrayList<RainbowSheep> children = new ArrayList();
             for (int i : PathFinder.NEIGHBOURS4) {
                 int npos = pos + i;
