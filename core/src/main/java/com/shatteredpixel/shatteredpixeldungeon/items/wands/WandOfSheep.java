@@ -87,11 +87,6 @@ public class WandOfSheep extends Wand {
     }
 
     @Override
-    public String statsDesc() {
-        return "Verwandelt ein Gebiet in einen Schaf-Kegel. Anzahl Schafe: " + chargesPerCast();
-    }
-
-    @Override
     public void staffFx(MagesStaff.StaffParticle particle) {
         // Weiße bis hellgraue Partikel für Schafwolle
         particle.color( ColorMath.random(0xFFFFFF, 0xEEEEEE) );
