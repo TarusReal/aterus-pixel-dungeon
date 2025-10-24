@@ -136,7 +136,7 @@ public class HeroSelectScene extends PixelScene {
 
 				if (GamesInProgress.selectedClass == HeroClass.DUELIST&& Random.Int(0,20)==1) {
 					waiting = true;
-					Sample.INSTANCE.play(Assets.Sounds.DUELISTJ,0.7f);
+					Sample.INSTANCE.play(Assets.Sounds.DUELISTJ,0.9f);
 					Sample.INSTANCE.play(Assets.Sounds.ZAP);
 					background.texture(Assets.Splashes.DUELIST2);
 					Timer.schedule(new Timer.Task() {
