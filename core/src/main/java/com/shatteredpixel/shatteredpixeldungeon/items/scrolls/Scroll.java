@@ -163,6 +163,7 @@ public abstract class Scroll extends Item {
 			image = ItemSpriteSheet.SCROLL_KAUNAN;
 			rune = "KAUNAN";
 		}
+
 	}
 	
 	@Override
@@ -171,7 +172,8 @@ public abstract class Scroll extends Item {
 		actions.add( AC_READ );
 		return actions;
 	}
-	
+
+
 	@Override
 	public void execute( Hero hero, String action ) {
 

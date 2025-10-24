@@ -323,22 +323,8 @@ public class ScrollOfFasttrack extends ExoticScroll {
             return true;
         }
 
-        // Hilfsmethode für Debug-Log
-        private Object getField(Object obj, String fieldName) {
-            try {
-                java.lang.reflect.Field f = obj.getClass().getDeclaredField(fieldName);
-                f.setAccessible(true);
-                return f.get(obj);
-            } catch (Exception e) { return "?"; }
-        }
 
-        // Hilfsmethode für Sprite-Debug-Log
-        private Object getSpriteField(Object obj, String fieldName) {
-            try {
-                java.lang.reflect.Field f = obj.getClass().getDeclaredField(fieldName);
-                f.setAccessible(true);
-                return f.get(obj);
-            } catch (Exception e) { return "?"; }
-        }
+
+
     }
 }
