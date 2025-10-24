@@ -69,9 +69,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.*;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfFasttrack;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPrismaticImage;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.*;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfRandom;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfRevelation;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
@@ -159,12 +157,16 @@ public enum HeroClass {
 				new StoneOfRandom().collect();
 				new PotionOfStrength().collect();
 				new ScrollOfUpgrade().collect();
+				new ScrollOfIdentify().collect();
+
 			}
 			new Halberd().collect();
 			new StoneOfRevelation().collect();
 			new WandOfSheep().collect();
 			new ScrollOfPrismaticImage().collect();
 			new AlchemistsToolkit().collect();
+			//new ScrollOfMystery().collect();
+			new ScrollOfAntiMagic();
 			//new ScrollOfWisdom().collect();
 			//new ScrollOfShattering().collect();
 			//new ScrollOfRevelation().collect();

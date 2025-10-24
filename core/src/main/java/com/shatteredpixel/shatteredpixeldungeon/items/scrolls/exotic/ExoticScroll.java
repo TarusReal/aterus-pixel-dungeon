@@ -75,6 +75,7 @@ public abstract class ExoticScroll extends Scroll {
 
 		regToExo.put(ScrollOfGuidance.class, ScrollOfFasttrack.class);
 		exoToReg.put(ScrollOfFasttrack.class, ScrollOfGuidance.class);
+
 	}
 	
 	@Override
