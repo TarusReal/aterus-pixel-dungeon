@@ -85,8 +85,10 @@ public class WandOfSheep extends Wand {
         if (chargesPerCast() == 1) {
             // Nur das Ziel-Feld prüfen
             int cell = target;
-            int terr = Dungeon.level.map[cell];
-            if ((terr == Terrain.EMPTY || terr == Terrain.EMBERS || terr == Terrain.EMPTY_DECO||terr==Terrain.WATER||terr==Terrain.GRASS||terr==Terrain.HIGH_GRASS||terr==Terrain.FURROWED_GRASS)
+            //int terr = Dungeon.level.map[cell];
+            if ((Dungeon.level.insideMap(cell)
+                    && Actor.findChar(cell) == null
+                    && !(Dungeon.level.pit[cell]))
                     && !Char.hasProp(Actor.findChar(cell), Char.Property.IMMOVABLE)
                     && Actor.findChar(cell) == null) {
                 RainbowSheep sheep = new RainbowSheep();

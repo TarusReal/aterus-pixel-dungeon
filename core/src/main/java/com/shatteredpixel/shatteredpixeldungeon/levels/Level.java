@@ -782,7 +782,7 @@ public abstract class Level implements Bundlable {
 		} while ((Dungeon.level == this && heroFOV[cell])
 				|| !passable[cell]
 				|| (Char.hasProp(ch, Char.Property.LARGE) && !openSpace[cell])
-				|| Actor.findChar( cell ) != null);
+				|| (Actor.findChar(cell) != null && !(ch == Dungeon.hero && Actor.findChar(cell) instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RainbowSheep)));
 		return cell;
 	}
 	

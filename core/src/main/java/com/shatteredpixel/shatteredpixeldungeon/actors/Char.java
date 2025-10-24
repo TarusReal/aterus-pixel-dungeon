@@ -1246,7 +1246,7 @@ public abstract class Char extends Actor {
 			int newPos = pos + PathFinder.NEIGHBOURS8[Random.Int( 8 )];
 			if (!(Dungeon.level.passable[newPos] || Dungeon.level.avoid[newPos])
 					|| (properties().contains(Property.LARGE) && !Dungeon.level.openSpace[newPos])
-					|| Actor.findChar( newPos ) != null)
+					|| (Actor.findChar(newPos) != null && !(this == Dungeon.hero && Actor.findChar(newPos) instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RainbowSheep)))
 				return;
 			else {
 				sprite.move(pos, newPos);

@@ -154,6 +154,8 @@ public class Assets {
 		public static final String BADGE    = "sounds/badge.mp3";
 		public static final String GOLD     = "sounds/gold.mp3";
 
+		public static final String DUELISTJ = "sounds/cryofpain.mp3";
+
 		public static final String OPEN     = "sounds/door_open.mp3";
 		public static final String UNLOCK   = "sounds/unlock.mp3";
 		public static final String ITEM     = "sounds/item.mp3";
@@ -229,7 +231,7 @@ public class Assets {
 				HIT, MISS, HIT_SLASH, HIT_STAB, HIT_CRUSH, HIT_MAGIC, HIT_STRONG, HIT_PARRY,
 				HIT_ARROW, ATK_SPIRITBOW, ATK_CROSSBOW, HEALTH_WARN, HEALTH_CRITICAL,
 
-				DESCEND, EAT, READ, LULLABY, DRINK, SHATTER, ZAP, LIGHTNING, LEVELUP, DEATH,
+				DESCEND, EAT, READ, LULLABY, DRINK, SHATTER, ZAP, DUELISTJ, LIGHTNING, LEVELUP, DEATH,
 				CHALLENGE, CURSED, TRAP, EVOKE, TOMB, ALERT, MELD, BOSS, BLAST, PLANT, RAY, BEACON,
 				TELEPORT, CHARMS, MASTERY, PUFF, ROCKS, BURNING, FALLING, GHOST, SECRET, BONES,
 				BEE, DEGRADE, MIMIC, DEBUFF, CHARGEUP, GAS, CHAINS, SCAN, SHEEP, MINE
@@ -242,6 +244,8 @@ public class Assets {
 		public static final String ROGUE    = "splashes/rogue.jpg";
 		public static final String HUNTRESS = "splashes/huntress.jpg";
 		public static final String DUELIST  = "splashes/duelist.jpg";
+		public static final String DUELIST2  = "splashes/duelist2.png";
+
 		public static final String CLERIC   = "splashes/cleric.jpg";
 
 		public static final String SEWERS   = "splashes/sewers.jpg";

@@ -21,13 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
-import com.shatteredpixel.shatteredpixeldungeon.Chrome;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
-import com.shatteredpixel.shatteredpixeldungeon.Rankings;
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.badlogic.gdx.utils.Timer;
+import com.shatteredpixel.shatteredpixeldungeon.*;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -55,11 +50,13 @@ import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.PointerArea;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.tweeners.Tweener;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.PointF;
+import com.watabou.utils.Random;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -72,7 +69,7 @@ public class HeroSelectScene extends PixelScene {
 	private Image background;
 	private Image fadeLeft, fadeRight;
 	private IconButton btnFade; //only on landscape
-
+	boolean waiting=false;
 	//fading UI elements
 	private RenderedTextBlock title;
 	private ArrayList<StyledButton> heroBtns = new ArrayList<>();
@@ -135,14 +132,33 @@ public class HeroSelectScene extends PixelScene {
 				super.onClick();
 
 				if (GamesInProgress.selectedClass == null) return;
+				if(waiting) return;
 
-				Dungeon.hero = null;
-				Dungeon.daily = Dungeon.dailyReplay = false;
-				Dungeon.initSeed();
-				ActionIndicator.clearAction();
-				InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
-
-				Game.switchScene( InterlevelScene.class );
+				if (GamesInProgress.selectedClass == HeroClass.DUELIST&& Random.Int(0,20)==1) {
+					waiting = true;
+					Sample.INSTANCE.play(Assets.Sounds.DUELISTJ,0.9f);
+					Sample.INSTANCE.play(Assets.Sounds.ZAP);
+					background.texture(Assets.Splashes.DUELIST2);
+					Timer.schedule(new Timer.Task() {
+						@Override
+						public void run() {
+							background.texture(TextureCache.createSolid(0xFF2d2f31)); // Standardbild zurücksetzen
+							Dungeon.hero = null;
+							Dungeon.daily = Dungeon.dailyReplay = false;
+							Dungeon.initSeed();
+							ActionIndicator.clearAction();
+							InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+							Game.switchScene( InterlevelScene.class );
+						}
+					}, 3); // 1 Sekunde Verzögerung
+				} else {
+					Dungeon.hero = null;
+					Dungeon.daily = Dungeon.dailyReplay = false;
+					Dungeon.initSeed();
+					ActionIndicator.clearAction();
+					InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+					Game.switchScene( InterlevelScene.class );
+				}
 			}
 		};
 		startBtn.icon(Icons.get(Icons.ENTER));

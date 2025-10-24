@@ -91,6 +91,7 @@ public class Sheep extends NPC {
 		return true;
 	}
 
+
 	private static final String LIFESPAN = "lifespan";
 
 	@Override
