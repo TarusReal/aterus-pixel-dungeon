@@ -67,7 +67,7 @@ public class WandOfSheep extends Wand {
                     && Actor.findChar(cell) == null) {
                 RainbowSheep sheep = new RainbowSheep();
                 sheep.pos = cell;
-                sheep.initialize(chargesPerCast(),10f + Random.Float(2f)+buffedLvl()*2f);
+                sheep.initialize((int) (chargesPerCast()+(buffedLvl()+2)/3f),10f + Random.Float(2f)+buffedLvl()*2f);
                 GameScene.add(sheep);
             }
 
@@ -88,7 +88,7 @@ public class WandOfSheep extends Wand {
 
     @Override
     public String statsDesc() {
-        return "Verwandelt ein Gebiet in einen Schaf-Kegel. Anzahl Schafe: " + chargesPerCast();
+        return "Verwandelt ein Gebiet in einen Schaf-Kegel. Anzahl Schafe: " + (int) (chargesPerCast()+(buffedLvl()+2)/3f);
     }
 
     @Override
