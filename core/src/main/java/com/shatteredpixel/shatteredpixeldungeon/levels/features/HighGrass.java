@@ -133,14 +133,14 @@ public class HighGrass {
 				lootChance *= PetrifiedSeed.grassLootMultiplier();
 
 				if (Random.Float() < lootChance) {
-                    int dropType = Random.Int(10); // 0: Seed, 1: Seed, 2: Berry, 3: GreenBerry
-                    if (dropType < 8) {
+                    int dropType = Random.Int(1000); // 0: Seed, 1: Seed, 2: Berry, 3: GreenBerry
+                    if (dropType < 998) {
                         if (Random.Float() < PetrifiedSeed.stoneInsteadOfSeedChance()) {
                             level.drop(Generator.randomUsingDefaults(Generator.Category.STONE), pos).sprite.drop();
                         } else {
                             level.drop(Generator.random(Generator.Category.SEED), pos).sprite.drop();
                         }
-                    } else if (dropType == 8) {
+                    } else if (dropType == 998) {
                         level.drop(new Berry(), pos).sprite.drop();
                     } else {
                         level.drop(new GreenBerry(), pos).sprite.drop();
@@ -148,7 +148,7 @@ public class HighGrass {
                 }
                 // Beeren-Drop unabhängig von Samen, mit gleicher Wahrscheinlichkeit
                 if (Random.Float() < lootChance) {
-                    if (Random.Int(2) == 0) {
+                    if (Random.Int(1000) == 998) {
                         level.drop(new Berry(), pos).sprite.drop();
                     } else {
                         level.drop(new GreenBerry(), pos).sprite.drop();
