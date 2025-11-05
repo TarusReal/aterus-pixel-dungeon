@@ -44,7 +44,6 @@ public class WandOfSheep extends Wand {
 
     @Override
     public void fx(Ballistica bolt, Callback callback) {
-            cone = null;
             ((MagicMissile)curUser.sprite.parent.recycle( MagicMissile.class )).reset(
                     MagicMissile.MAGIC_MISS_CONE,
                     curUser.sprite,
@@ -67,7 +66,7 @@ public class WandOfSheep extends Wand {
                     && Actor.findChar(cell) == null) {
                 RainbowSheep sheep = new RainbowSheep();
                 sheep.pos = cell;
-                sheep.initialize(chargesPerCast(),10f + Random.Float(2f)+buffedLvl()*2f);
+                sheep.initialize((int) (chargesPerCast()+(buffedLvl()+2)/3f),8f + Random.Float(2f)+buffedLvl()*1.6f);
                 GameScene.add(sheep);
             }
 
@@ -87,9 +86,20 @@ public class WandOfSheep extends Wand {
     }
 
     @Override
+    public String statsDesc() {
+        return "Verwandelt ein Gebiet in einen Schaf-Kegel. Anzahl Schafe: " + (int) (chargesPerCast()+(buffedLvl()+2)/3f);
+    }
+
+    @Override
     public void staffFx(MagesStaff.StaffParticle particle) {
         // Weiße bis hellgraue Partikel für Schafwolle
-        particle.color( ColorMath.random(0xFFFFFF, 0xEEEEEE) );
+        if (Random.Int(10) == 0){
+            particle.color(ColorMath.random(0xFFF568, 0x80791A));
+        } else {
+            particle.color(ColorMath.random(0x805500, 0x332500));
+        }
+        particle.color( ColorMath.random(0x4400CC, 0x99EEFF) );
+
         particle.am = 1f;
         particle.setLifespan(1f);
         particle.setSize( 1f, 1.5f);
