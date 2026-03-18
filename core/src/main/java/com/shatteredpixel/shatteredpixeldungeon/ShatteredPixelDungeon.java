@@ -97,7 +97,7 @@ public class ShatteredPixelDungeon extends Game {
 	public void create() {
 		super.create();
 
-		updateSystemUI();
+		//updateSystemUI();
 		SPDAction.loadBindings();
 		
 		Music.INSTANCE.enable( SPDSettings.music() );
