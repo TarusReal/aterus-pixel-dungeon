@@ -1275,6 +1275,11 @@ public abstract class Char extends Actor {
 		//do nothing by default, but some chars can pass over terrain that others can't
 		return passable;
 	}
+
+	public boolean[] modifyBlocking( boolean[] blocking){
+		//do nothing by default, but some chars can be seen through
+		return blocking;
+	}
 	
 	public void onMotionComplete() {
 		//Does nothing by default

@@ -78,6 +78,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Smite;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RainbowSheep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CheckedCell;
@@ -1752,7 +1753,7 @@ public class Hero extends Char {
 
 			path = null;
 
-			if (Actor.findChar( target ) == null) {
+			if (Actor.findChar( target ) == null || Actor.findChar(target) instanceof RainbowSheep) {
 				if (Dungeon.level.passable[target] || Dungeon.level.avoid[target]) {
 					step = target;
 				}
@@ -1772,7 +1773,7 @@ public class Hero extends Char {
 			else if (path.getLast() != target)
 				newPath = true;
 			else {
-				if (!Dungeon.level.passable[path.get(0)] || Actor.findChar(path.get(0)) != null) {
+				if (!Dungeon.level.passable[path.get(0)] || (Actor.findChar(path.get(0)) != null && !(Actor.findChar(path.get(0)) instanceof RainbowSheep))) {
 					newPath = true;
 				}
 			}

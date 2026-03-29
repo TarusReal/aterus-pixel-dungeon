@@ -59,16 +59,22 @@ public class RainbowSheep extends Sheep {
         initialize(3, lifespan);
     }
 
-    @Override
-    public boolean interact(Char c) {
-        if (c == Dungeon.hero) {
-            Sample.INSTANCE.play(Assets.Sounds.SHEEP, 1, Random.Float(0.91f, 1.1f));
-            // Spieler auf das Feld des Schafs bewegen
-            int oldPos = Dungeon.hero.pos;
-            Dungeon.hero.pos = this.pos;
-            Dungeon.hero.sprite.move(oldPos, this.pos);
-            Dungeon.hero.sprite.visible = true;
-        }
-        return true;
-    }
+	@Override
+	public boolean interact(Char c) {
+		if (c == Dungeon.hero) {
+			Sample.INSTANCE.play(Assets.Sounds.SHEEP, 1, Random.Float(0.91f, 1.1f));
+			// Spieler auf das Feld des Schafs bewegen
+			int oldPos = Dungeon.hero.pos;
+			Dungeon.hero.pos = this.pos;
+			Dungeon.hero.sprite.move(oldPos, this.pos);
+			Dungeon.hero.sprite.visible = true;
+		}
+		return true;
+	}
+
+	@Override
+	public boolean[] modifyBlocking(boolean[] blocking) {
+		blocking[pos] = false;
+		return blocking;
+	}
 }

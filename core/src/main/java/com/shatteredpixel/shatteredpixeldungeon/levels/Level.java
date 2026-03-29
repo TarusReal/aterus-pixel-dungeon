@@ -1316,6 +1316,11 @@ public abstract class Level implements Bundlable {
 				blocking = Dungeon.level.losBlocking;
 			}
 
+			//characters can modify blocking (e.g. RainbowSheep is transparent)
+			for (Char ch : Actor.chars()) {
+				blocking = ch.modifyBlocking(blocking);
+			}
+
 			float viewDist = c.viewDistance;
 			if (c instanceof Hero){
 				viewDist *= 1f + 0.25f*((Hero) c).pointsInTalent(Talent.FARSIGHT);

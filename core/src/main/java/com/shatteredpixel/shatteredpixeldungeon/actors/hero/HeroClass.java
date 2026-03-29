@@ -72,6 +72,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.*;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.*;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfRandom;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfRevelation;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfSheep;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
@@ -163,6 +164,7 @@ public enum HeroClass {
 			new Halberd().collect();
 			new StoneOfRevelation().collect();
 			new WandOfSheep().collect();
+			new WandOfLivingEarth().collect();
 			new ScrollOfPrismaticImage().collect();
 			new AlchemistsToolkit().collect();
 			//new ScrollOfMystery().collect();
