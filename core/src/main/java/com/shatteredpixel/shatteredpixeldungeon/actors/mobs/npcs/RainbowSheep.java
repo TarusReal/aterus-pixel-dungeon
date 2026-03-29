@@ -5,6 +5,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 
+import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.watabou.noosa.Game;
@@ -45,6 +47,8 @@ public class RainbowSheep extends Sheep {
                     child.pos = npos;
                     children.add(child);
                     GameScene.add(child);
+                    Dungeon.level.occupyCell(child);
+
                 }
             }
             for(RainbowSheep child : children) {
@@ -61,9 +65,12 @@ public class RainbowSheep extends Sheep {
 
 	@Override
 	public boolean interact(Char c) {
-		if (c == Dungeon.hero) {
+        Bestiary.setSeen(getClass());
+        if(Math.random()>0.5){
+        sprite.showStatus( CharSprite.NEUTRAL, Messages.get(this, Random.element( LINE_KEYS )) );}
+        if (c == Dungeon.hero) {
 			Sample.INSTANCE.play(Assets.Sounds.SHEEP, 1, Random.Float(0.91f, 1.1f));
-			// Spieler auf das Feld des Schafs bewegen
+            // Spieler auf das Feld des Schafs bewegen
 			int oldPos = Dungeon.hero.pos;
 			Dungeon.hero.pos = this.pos;
 			Dungeon.hero.sprite.move(oldPos, this.pos);

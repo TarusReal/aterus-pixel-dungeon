@@ -56,6 +56,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RainbowSheep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
@@ -706,7 +707,12 @@ public class CursedWand {
 		public boolean effect(Item origin, Char user, Ballistica bolt, boolean positiveOnly) {
 			if (valid(origin, user, bolt, positiveOnly)){
 				Char ch = Actor.findChar( bolt.collisionPos );
-				Sheep sheep = new Sheep();
+				Sheep sheep;
+				if(Math.random()>0.5)
+				{
+					sheep=new RainbowSheep();
+				}else{
+				 sheep = new Sheep();}
 				sheep.initialize(10);
 				sheep.pos = ch.pos;
 				ch.destroy();

@@ -28,6 +28,7 @@ public class WandOfSheep extends Wand {
             sheep.pos = cell;
             sheep.initialize((int) (chargesPerCast()+(buffedLvl()+2)/3f), 8f + Random.Float(2f)+buffedLvl()*1.6f);
             GameScene.add(sheep);
+            Dungeon.level.occupyCell(sheep);
         }
     }
 
