@@ -609,8 +609,8 @@ public class InterlevelScene extends PixelScene {
 			Dungeon.init();
 			GameLog.wipe();
 
-			//When debugging, we may start a game at a later depth to quickly test something
-			// if this happens, the games quickly generates all prior levels on branch 0 first,
+			//When debugging, we may start a game at a later depth to quickly test something.
+			// If this happens, the games quickly generates all prior levels on branch 0 first,
 			// which ensures levelgen consistency with a regular game that was played to that depth.
 			if (DeviceCompat.isDebug()){
 				int trueDepth = Dungeon.depth;

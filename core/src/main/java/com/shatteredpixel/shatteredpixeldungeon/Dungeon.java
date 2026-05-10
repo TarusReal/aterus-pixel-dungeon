@@ -302,6 +302,7 @@ public class Dungeon {
 		Level level;
 		if (branch == 0) {
 			switch (depth) {
+				case 0:
 				case 1:
 				case 2:
 				case 3:
