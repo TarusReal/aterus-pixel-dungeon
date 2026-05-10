@@ -93,8 +93,10 @@ public class CrystalSpire extends Mob {
 
 		throwItems();
 
-		sprite.hideAlert();
-		sprite.hideLost();
+		if (sprite != null) {
+			sprite.hideAlert();
+			sprite.hideLost();
+		}
 
 		//mob logic
 		enemy = Dungeon.hero;
@@ -415,7 +417,7 @@ public class CrystalSpire extends Mob {
 
 							for (Char ch : Actor.chars()) {
 								if (ch instanceof CrystalGuardian){
-									if (((CrystalGuardian) ch).state == ((CrystalGuardian) ch).SLEEPING) {
+									if (((CrystalGuardian) ch).state == ((CrystalGuardian)ch).SLEEPING) {
 
 										((CrystalGuardian) ch).aggro(Dungeon.hero);
 										((CrystalGuardian) ch).beckon(pos);
@@ -425,7 +427,7 @@ public class CrystalSpire extends Mob {
 											Buff.affect(ch, Paralysis.class, 20-PathFinder.distance[ch.pos]);
 										}
 
-									} else if (((CrystalGuardian) ch).state != ((CrystalGuardian) ch).HUNTING && ((CrystalGuardian) ch).target != pos){
+									} else if (((CrystalGuardian) ch).state != ((CrystalGuardian)ch).HUNTING && ((CrystalGuardian) ch).target != pos){
 										((CrystalGuardian) ch).beckon(pos);
 										if (((CrystalGuardian) ch).state != HUNTING) {
 											((CrystalGuardian) ch).aggro(Dungeon.hero);
