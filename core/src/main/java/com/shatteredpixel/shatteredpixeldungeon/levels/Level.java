@@ -311,6 +311,16 @@ public abstract class Level implements Bundlable {
 		createItems();
 
 		Random.popGenerator();
+
+		// Debug: Ausgabe der Level-Metadaten nach Erzeugung
+		try {
+			System.out.println("[DEBUG] Level created: width=" + width + " height=" + height + " length=" + length + " transitions=" + (transitions==null?0:transitions.size()));
+			LevelTransition t = getTransition(null);
+			LevelTransition ex = getTransition(LevelTransition.Type.REGULAR_EXIT);
+			System.out.println("[DEBUG] entrance=" + (t==null?-1:t.cell()) + " exit=" + (ex==null?-1:ex.cell()));
+		} catch (Exception e) {
+			System.out.println("[DEBUG] Error while printing level info: " + e.getMessage());
+		}
 	}
 	
 	public void setSize(int w, int h){

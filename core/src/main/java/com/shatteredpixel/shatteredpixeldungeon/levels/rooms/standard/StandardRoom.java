@@ -165,7 +165,14 @@ public abstract class StandardRoom extends Room {
 		rooms.add(SuspiciousChestRoom.class);
 		rooms.add(MinefieldRoom.class);
 	}
-	
+
+	// Rooms specific to the surface (depth 0). Use fully-qualified names to avoid
+	// compile-time dependency problems when files are created/loaded dynamically.
+	private static String[] surfaceRoomNames = new String[]{
+		"com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.SurfaceRoom"
+	};
+
+	// restore the chances table declaration and static initializer
 	private static float[][] chances = new float[27][];
 	static {
 		chances[0] =  new float[]{16,8,8,4,4,   0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0,  1,0,1,0,1,0,1,1,0,0};
@@ -189,6 +196,18 @@ public abstract class StandardRoom extends Room {
 	
 	
 	public static StandardRoom createRoom(){
+		// If we're on the surface (depth 0) try to instantiate a surface room by name.
+		if (Dungeon.depth <= 0 && surfaceRoomNames.length > 0) {
+			String name = surfaceRoomNames[Random.Int(surfaceRoomNames.length)];
+			try {
+				Class<?> cls = Class.forName(name);
+				@SuppressWarnings("unchecked")
+				Class<? extends StandardRoom> roomClass = (Class<? extends StandardRoom>) cls;
+				return Reflection.newInstance(roomClass);
+			} catch (Throwable e) {
+				// fall back to normal selection on any error
+			}
+		}
 		return Reflection.newInstance(rooms.get(Random.chances(chances[Math.max(Dungeon.depth,0)])));
 	}
 	

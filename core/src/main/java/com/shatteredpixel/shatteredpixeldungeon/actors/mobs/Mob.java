@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import com.badlogic.gdx.Gdx;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
@@ -100,7 +99,6 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
-import jdk.internal.net.http.common.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -233,13 +231,8 @@ public abstract class Mob extends Char {
 		if (justAlerted){
 			sprite.showAlert();
 		} else {
-			try{
 			sprite.hideAlert();
-			sprite.hideLost();}
-			catch(Exception e)
-			{
-				Gdx.app.log("Mob.act()", "Exception while hiding sprite");
-			}
+			sprite.hideLost();
 		}
 		
 		if (paralysed > 0) {

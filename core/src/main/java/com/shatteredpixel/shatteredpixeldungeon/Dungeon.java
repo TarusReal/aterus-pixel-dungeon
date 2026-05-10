@@ -39,11 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.S
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.DivineSense;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RainbowSheep;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.*;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -467,13 +463,31 @@ public class Dungeon {
 		//Place hero at the entrance if they are out of the map (often used for pos = -1)
 		// or if they are in invalid terrain terrain (except in the mining level, where that happens normally)
 		if (pos < 0 || pos >= level.length() || level.invalidHeroPos(pos)){
-			pos = level.getTransition(null).cell();
+			LevelTransition t = level.getTransition(null);
+			if (t != null) {
+				pos = t.cell();
+			} else {
+				// no transition available (custom/buggy level). find a safe passable cell
+				int safe = -1;
+				for (int i = 0; i < level.length(); i++) {
+					if (level.passable[i] && !level.solid[i]) { safe = i; break; }
+				}
+				if (safe != -1) pos = safe;
+				else pos = Math.max(0, Math.min(level.length()-1, pos));
+			}
 		}
-		
-		PathFinder.setMapSize(level.width(), level.height());
-		
+
+		// assign level and hero position
 		Dungeon.level = level;
 		hero.pos = pos;
+
+		// make sure PathFinder and other helpers know the correct map size
+		if (level.width() > 0 && level.height() > 0) {
+			PathFinder.setMapSize(level.width(), level.height());
+		} else {
+			// defensive fallback: if level size isn't initialized, try to set to 1x1 to avoid OOB
+			PathFinder.setMapSize(Math.max(1, level.width()), Math.max(1, level.height()));
+		}
 
 		if (hero.buff(AscensionChallenge.class) != null){
 			hero.buff(AscensionChallenge.class).onLevelSwitch();
